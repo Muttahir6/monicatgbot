@@ -21,9 +21,12 @@ from tg_bot.modules.translations.strings import tld, tld_help
 from tg_bot.modules.connection import connected
 
 PM_START = """Hi {}, My name is {} - I'm here to help you manage your groups!
-I'm a modular group management bot with a few fun extras! Have a look at the following for an idea of some of the things I can help you with.
-I'm built in python3, using the python-telegram-bot library,
-Click Help button to find out more about how to use me to my full potential. Join to my [NEWS CHANNEL](https://t.me/joinchat/AAAAAFSlDsiCWeq9UhYLGg) for announcements on new features, downtime, etc."""
+
+I'm a modular group management bot maintained by [this wonderful person](https://t.me/Muttahir)! Have a look at the following for an idea of some of the things I can help you with.
+
+I'm a group manager bot . I'm built in python3, using the python-telegram-bot library,
+
+Click Help button or use /help to find out more about how to use me to my full potential.\n\nWant to add me to your group? [Click here!](t.me/Monicabetarobot?startgroup=true)"""
 
 DONATE_STRING = """Heya, glad to hear you want to donate!
 It took lots of work for [my creator](t.me/SonOfLars) to get me to where I am now, and every donation helps \
