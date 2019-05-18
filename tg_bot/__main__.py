@@ -149,9 +149,18 @@ def send_start(bot, update):
     update.effective_message.reply_text(PM_START.format(escape_markdown(first_name), bot.first_name), reply_markup=InlineKeyboardMarkup(keyboard), disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN)
 
 def control_panel(bot, update):
-    print("Panel")
+    LOGGER.info("Control panel")
     chat = update.effective_chat
     user = update.effective_user
+
+    # ONLY send help in PM
+    if chat.type != chat.PRIVATE:
+
+        update.effective_message.reply_text("Contact me in PM to access the control panel.",
+                                            reply_markup=InlineKeyboardMarkup(
+                                                [[InlineKeyboardButton(text="Control Panel",
+                                                                       url=f"t.me/{bot.username}?start=controlpanel")]]))
+        return
 
     #Support to run from command handler
     query = update.callback_query
@@ -163,36 +172,36 @@ def control_panel(bot, update):
         G_match = re.match(r"cntrl_panel_G", query.data)
         back_match = re.match(r"help_back", query.data)
 
-        print(query.data)
+        LOGGER.info(query.data)
     else:
-        M_match = "Monica is best bot"
+        M_match = "Monica is the best bot" #LMAO, don't uncomment
 
     if M_match:
-        text = "*Control panel* 🛠 (beta)"
+        text = "*Control panel* 🛠"
 
         keyboard = [[InlineKeyboardButton(text="👤 My settings", callback_data="cntrl_panel_U(1)")]]
 
         #Show connected chat and add chat settings button
         conn = connected(bot, update, chat, user.id, need_admin=False)
 
-        if not conn == False:
+        if conn:
             chatG = bot.getChat(conn)
-            admin_list = chatG.get_administrators()
+            #admin_list = chatG.get_administrators() #Unused variable
 
             #If user admin
             member = chatG.get_member(user.id)
             if member.status in ('administrator', 'creator'):
-                text += "\nConnected chat - *{}* (you {})".format(chatG.title, member.status)
+                text += f"\nConnected chat - *{chatG.title}* (you {member.status})"
                 keyboard += [[InlineKeyboardButton(text="👥 Group settings", callback_data="cntrl_panel_G_back")]]
             elif user.id in SUDO_USERS:
-                text += "\nConnected chat - *{}* (you sudo)".format(chatG.title)
+                text += f"\nConnected chat - *{chatG.title}* (you sudo)"
                 keyboard += [[InlineKeyboardButton(text="👥 Group settings (SUDO)", callback_data="cntrl_panel_G_back")]]
             else:
-                text += "\nConnected chat - *{}* (you don't admin!)".format(chatG.title)
+                text += f"\nConnected chat - *{chatG.title}* (you aren't an admin!)"
         else:
             text += "\nNo chat connected!"
 
-        keyboard += [[InlineKeyboardButton(text="Back", callback_data="bot_start")]]
+        keyboard += [[InlineKeyboardButton(text="⬅️ Back", callback_data="bot_start")]]
 
         update.effective_message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
 
@@ -211,7 +220,7 @@ def control_panel(bot, update):
                 CHAT_SETTINGS[module].__mod_name__) + R[0]
 
             keyboard = R[1]
-            keyboard += [[InlineKeyboardButton(text="Back", callback_data="cntrl_panel_U(1)")]]
+            keyboard += [[InlineKeyboardButton(text="⬅️ Back", callback_data="cntrl_panel_U(1)")]]
                 
             query.message.reply_text(text=text, arse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
 
@@ -260,7 +269,7 @@ def control_panel(bot, update):
             chat = bot.get_chat(chat_id)
             query.message.reply_text(tld(user.id, "send-group-settings").format(chat.title),
                                     reply_markup=InlineKeyboardMarkup(
-                                        paginate_modules(curr_page - 1, CHAT_SETTINGS, "cntrl_panel_G",
+                                        paginate_modules(curr_page - 1, 0, CHAT_SETTINGS, "cntrl_panel_G",
                                                         chat=chat_id)))
 
         elif next_match:
@@ -269,7 +278,7 @@ def control_panel(bot, update):
             chat = bot.get_chat(chat_id)
             query.message.reply_text(tld(user.id, "send-group-settings").format(chat.title),
                                     reply_markup=InlineKeyboardMarkup(
-                                        paginate_modules(next_page + 1, CHAT_SETTINGS, "cntrl_panel_G",
+                                        paginate_modules(next_page + 1, 0, CHAT_SETTINGS, "cntrl_panel_G",
                                                         chat=chat_id)))
 
         elif back_match:
