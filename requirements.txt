@@ -8,7 +8,11 @@ feedparser
 pyowm
 pythonping
 pynewtonmath
+#memes from SkittBot
+spongemock
+zalgo-text
 geopy
+nltk
 aiohttp>=2.2.5
 Pillow>=4.2.0
 #Cool stuff by Peak
