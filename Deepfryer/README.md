@@ -1,4 +1,4 @@
-# deeppyer
+# deeppyer Thanks to peak
 ![banner image](./banner.jpg)
 
 deeppyer is an image deepfryer written in Python using [Pillow](https://python-pillow.org/
