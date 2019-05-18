@@ -19,9 +19,8 @@ from tg_bot import dispatcher, updater, TOKEN, WEBHOOK, SUDO_USERS, OWNER_ID, CE
 from tg_bot.modules import ALL_MODULES
 from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.misc import paginate_modules
-from tg_bot.modules.translations.strings import tld, tld_help
+from tg_bot.modules.translations.strings import tld, tld_help 
 from tg_bot.modules.connection import connected
-
 IMPORTED = {}
 MIGRATEABLE = []
 HELPABLE = {}
