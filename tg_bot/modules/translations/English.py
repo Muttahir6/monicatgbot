@@ -218,7 +218,7 @@ SLAP_TEMPLATES = (
     "{user1} sent {user2} to /dev/null.",
     "{user1} sent  {user2} down the memory hole.",
     "{user2} was a mistake.",
-    "{user2} was a mistake." - {user1}",
+    "{user2} was a mistake. - {user1}",
     "{user1} checkmated  {user2} in two moves.",
     "{user2} was made redundant.",
     "{user2} was assimilated.",
