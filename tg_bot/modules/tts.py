@@ -44,6 +44,3 @@ __mod_name__ = "Wikipedia Search"
 TTS_HANDLER = CommandHandler("tts", tts)
 
 dispatcher.add_handler(TTS_HANDLER)
-
-
-dispatcher.add_handler(CommandHandler
