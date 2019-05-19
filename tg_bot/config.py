@@ -1,18 +1,14 @@
 if not __name__.endswith("sample_config"):
     import sys
-    print("The README is there to be read. Extend this sample config to a config file, don't just rename and change "
-          "values here. Doing that WILL backfire on you.\nBot quitting.", file=sys.stderr)
-    quit(1)
 
 
-# Create a new config.py file in same dir and import, then extend this class.
-class Config(object):
+# class Config(object):
     LOGGER = True
 
     # REQUIRED
-    API_KEY = "YOUR KEY HERE"
-    OWNER_ID = "YOUR ID HERE"  # If you dont know, run the bot and do /id in your private chat with it
-    OWNER_USERNAME = "YOUR USERNAME HERE"
+    API_KEY = "718763588:AAGNhfv3hiJbCxs7dsKp7KT1QOghxTpQKVk"
+    OWNER_ID = "90296554"  # If you dont know, run the bot and do /id in your private chat with it
+    OWNER_USERNAME = "Muttahir"
 
     # RECOMMENDED
     SQLALCHEMY_DATABASE_URI = 'sqldbtype://username:pw@hostname:port/db_name'  # needed for any database modules
