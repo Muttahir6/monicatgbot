@@ -5,6 +5,7 @@ import random
 import time
 import pyowm
 import re
+import wikipedia
 from pyowm import timeutils, exceptions
 from datetime import datetime
 from typing import Optional, List
@@ -533,6 +534,12 @@ def ud(bot: Bot, update: Update):
   message.reply_text(reply_text)
 
 
+def wiki(bot: Bot, update: Update):
+  query = update.effective_message.text.split(None, 1)
+  result = '**Search:**\n`' + query + '`\n\n**Result:**\n`' + wikipedia.summary(match)
+  update.effective_message.reply_markdown(result)
+
+
 def execute(bot: Bot, update: Update, args: List[str]):
 
     message = update.effective_message
@@ -595,6 +602,7 @@ __help__ = """
  - /getpaste: Get the content of a paste or shortened url from [dogbin](https://del.dog)
  - /pastestats: Get stats of a paste or shortened url from [dogbin](https://del.dog)
  - /ud: Type the word or expression you want to search. For example /ud Gay
+ - /wiki: Query the Wikipedia
  - /removebotkeyboard: Got a nasty bot keyboard stuck in your group?
  - /exec <language> <code> [/stdin <stdin>]: Execute a code in a specified language. Send an empty command to get the suppoerted languages.
 """
@@ -626,6 +634,7 @@ PASTE_HANDLER = DisableAbleCommandHandler("paste", paste, pass_args=True)
 GET_PASTE_HANDLER = DisableAbleCommandHandler("getpaste", get_paste_content, pass_args=True)
 PASTE_STATS_HANDLER = DisableAbleCommandHandler("pastestats", get_paste_stats, pass_args=True)
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
+WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
 
 
 dispatcher.add_handler(UD_HANDLER)
@@ -649,3 +658,4 @@ dispatcher.add_handler(LYRICS_HANDLER)
 dispatcher.add_handler(REPO_HANDLER)
 dispatcher.add_handler(DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove))
 dispatcher.add_handler(EXECUTE_HANDLER)
+dispatcher.add_handler(WIKI_HANDLER)
