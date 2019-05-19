@@ -19,6 +19,7 @@ from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.misc import paginate_modules
 from tg_bot.modules.translations.strings import tld, tld_help 
 from tg_bot.modules.connection import connected
+from tg_bot.modules.helper_funcs.misc import paginate_modules
 
 PM_START = """Hi {}, My name is {} - I'm here to help you manage your groups!
 
