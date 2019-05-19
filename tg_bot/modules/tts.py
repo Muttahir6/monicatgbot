@@ -36,4 +36,14 @@ def tts(bot: Bot, update: Update, args):
   with open("k.mp3", "rb") as speech:
       update.message.reply_voice(speech, quote=False)
 
-dispatcher.add_handler(CommandHandler("tts", tts)
+__help__ = """
+ - /tts: Text yo speech
+ """
+
+__mod_name__ = "Wikipedia Search"
+TTS_HANDLER = CommandHandler("tts", tts)
+
+dispatcher.add_handler(TTS_HANDLER)
+
+
+dispatcher.add_handler(CommandHandler
