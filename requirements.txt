@@ -25,3 +25,4 @@ beautifulsoup4==4.6.3
 wikipedia
 gTTS
 telegram
+gsearch
