@@ -227,16 +227,15 @@ def table(bot: Bot, update: Update):
           if r <= 45:
               update.message.reply_text("(╯°□°）╯彡 ┻━┻")
           elif r <= 90:
-              update.message.reply_text("Send money bsdk to buy new table to flip")
+              update.message.reply_text("Send money to buy a new table to flip")
           else:
-              update.message.reply_text("Go do some work instead of flippin tables you helpless fagit.")
+              update.message.reply_text("Go do some work instead of flippin tables you useless fellow.")
 		
 __help__ = """
  - /shrug : get shrug XD.
  - /table : get flip/unflip :v.
  - /decide : Randomly answers yes/no/maybe
  - /toss : Tosses A coin
- - /tts <any text> : Converts text to speech
  - /bluetext : check urself :V
  - /roll : Roll a dice.
  - /rlg : Join ears,nose,mouth and create an emo ;-;
