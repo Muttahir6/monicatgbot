@@ -15,7 +15,11 @@ def react(bot: Bot, update: Update):
   else:
     message.reply_text(react)
     
+__help__ = """
+ - /react : send react to let monica react
+"""
 
+__mod_name__ = "React"
 
 REACT_HANDLER = CommandHandler("react", react)
 
