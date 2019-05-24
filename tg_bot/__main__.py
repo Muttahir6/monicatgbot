@@ -201,7 +201,7 @@ def control_panel(bot, update):
         else:
             text += "\nNo chat connected!"
 
-        keyboard += [[InlineKeyboardButton(text="⬅️ Back", callback_data="bot_start")]]
+        keyboard += [[InlineKeyboardButton(text="Back", callback_data="bot_start")]]
 
         update.effective_message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
 
@@ -220,7 +220,7 @@ def control_panel(bot, update):
                 CHAT_SETTINGS[module].__mod_name__) + R[0]
 
             keyboard = R[1]
-            keyboard += [[InlineKeyboardButton(text="⬅️ Back", callback_data="cntrl_panel_U(1)")]]
+            keyboard += [[InlineKeyboardButton(text="Back", callback_data="cntrl_panel_U(1)")]]
                 
             query.message.reply_text(text=text, arse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
 
