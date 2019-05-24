@@ -5,6 +5,7 @@ import random
 import time
 import pyowm
 import re
+import wikipedia
 from pyowm import timeutils, exceptions
 from datetime import datetime
 from typing import Optional, List
