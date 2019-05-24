@@ -93,13 +93,27 @@ def getlink(bot: Bot, update: Update, args: List[int]):
         update.effective_message.reply_text("I don't have access to the invite link!")
 
 
-@bot_admin
-def leavechat(bot: Bot, update: Update, args: List[int]):
-    if args:
-        chat_id = int(args[0])
-        bot.leaveChat(chat_id)
+@run_async
+def leave_group(bot: Bot, update: Update, args: List[str]):
+    message = update.effective_message  # type: Optional[Message]
+    # Check if there is only one argument
+    if not len(args) == 1:
+        message.reply_text("Incorrect number of arguments. Please use `/sleave chat_id`.",
+                           parse_mode=ParseMode.MARKDOWN)
+        return
+
+    leave_chat_id = args[0]
+    try:
+        chat_title = bot.get_chat(leave_chat_id).title
+        bot.leave_chat(leave_chat_id)
+    except:
+        message.reply_text("<a href='https://telegra.ph/file/e3aba010647b528cec4d6.jpg'>_</a>ReQuested Operation was unsuccessful", parse_mode=ParseMode.HTML)
+        pass
     else:
-        update.effective_message.reply_text("You don't seem to be referring to a chat")
+        bot.send_message(MESSAGE_DUMP, "Successfully left chat <b>{}</b>!".format(chat_title), parse_mode=ParseMode.HTML)
+
+    # report the incident
+    restrictor = update.effective_user  # type: Optional[User]
 
 __help__ = """  
 **Owner only:**
@@ -134,11 +148,11 @@ BANALL_HANDLER = CommandHandler("banall", banall, pass_args=True, filters=Filter
 QUICKSCOPE_HANDLER = CommandHandler("quickscope", quickscope, pass_args=True, filters=CustomFilters.sudo_filter)
 QUICKUNBAN_HANDLER = CommandHandler("quickunban", quickunban, pass_args=True, filters=CustomFilters.sudo_filter)
 GETLINK_HANDLER = CommandHandler("getlink", getlink, pass_args=True, filters=Filters.user(OWNER_ID))
-LEAVECHAT_HANDLER = CommandHandler("leavechat", leavechat, pass_args=True, filters=Filters.user(OWNER_ID))
+LEAVE_GROUP_HANDLER = CommandHandler("leavechat", leavechat, pass_args=True, filters=Filters.user(OWNER_ID))
 
 dispatcher.add_handler(SNIPE_HANDLER)
 dispatcher.add_handler(BANALL_HANDLER)
 dispatcher.add_handler(QUICKSCOPE_HANDLER)
 dispatcher.add_handler(QUICKUNBAN_HANDLER)
 dispatcher.add_handler(GETLINK_HANDLER)
-dispatcher.add_handler(LEAVECHAT_HANDLER)
+dispatcher.add_handler(LEAVE_GROUP_HANDLER)
