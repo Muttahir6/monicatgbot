@@ -93,11 +93,20 @@ def new_member(bot: Bot, update: Update):
                 update.effective_message.reply_text("Master is in the houseeee, let's get this party started!")
                 continue
 
-            # Give start information when add bot to group
             elif new_mem.id == bot.id:
-                update.effective_message.reply_text("Thanks for adding me Sweetheart!")
+                bot.send_message(
+                    MESSAGE_DUMP,
+                    "I have been added to {} with ID: <pre>{}</pre>".format(chat.title, chat.id),
+                    parse_mode=ParseMode.HTML
+                )
+                 bot.send_message(
+                    update.message.chat_id,
+                    "Thanks for adding me sweetheart. If you need any help please contact @Muttahir."
+                )
+                continue
 
-            else:
+
+             else:
                 # If welcome message is media, send with appropriate function
                 if welc_type != sql.Types.TEXT and welc_type != sql.Types.BUTTON_TEXT:
                     ENUM_FUNC_MAP[welc_type](chat.id, cust_welcome)
