@@ -112,24 +112,7 @@ def chats(bot: Bot, update: Update):
 
     with BytesIO(str.encode(chatfile)) as output:
         output.name = "chatlist.txt"
-        update.effective_message.reply_document(document=output, filename="chatlist.txt",
-                                                caption="Here is the list of chats in my database.")
-
-
-@run_async
-def snipe(bot: Bot, update: Update, args: List[str]):
-    try:
-        chat_id = str(args[0])
-        del args[0]
-    except TypeError as excp:
-        update.effective_message.reply_text("Please give me a chat to echo to!")
-    to_send = " ".join(args)
-    if len(to_send) >= 2:
-        try:
-            bot.sendMessage(int(chat_id), str(to_send))
-        except TelegramError:
-            LOGGER.warning("Couldn't send to group %s", str(chat_id))
-            update.effective_message.reply_text("Couldn't send the message. Perhaps I'm not part of that group?")
+        update.effective_message.reply_document(document=output, filename="chatlist.txt",                                             caption="Here is the list of chats in my database.")
 
 
 @run_async
@@ -179,12 +162,10 @@ BROADCAST_HANDLER = CommandHandler("broadcast", broadcast, filters=Filters.user(
 USER_HANDLER = MessageHandler(Filters.all & Filters.group, log_user)
 CHATLIST_HANDLER = CommandHandler("chatlist", chats, filters=CustomFilters.sudo_filter)
 
-SNIPE_HANDLER = CommandHandler("snipe", snipe, pass_args=True, filters=CustomFilters.sudo_filter)
 SLIST_HANDLER = CommandHandler("slist", slist, filters=Filters.user(OWNER_ID))
 
 dispatcher.add_handler(USER_HANDLER, USERS_GROUP)
 dispatcher.add_handler(BROADCAST_HANDLER)
 dispatcher.add_handler(CHATLIST_HANDLER)
 
-dispatcher.add_handler(SNIPE_HANDLER)
 dispatcher.add_handler(SLIST_HANDLER)
