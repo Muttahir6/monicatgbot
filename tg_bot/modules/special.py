@@ -94,7 +94,7 @@ def getlink(bot: Bot, update: Update, args: List[int]):
 
 
 @run_async
-def leave_group(bot: Bot, update: Update, args: List[str]):
+def s_leave_group(bot: Bot, update: Update, args: List[str]):
     message = update.effective_message  # type: Optional[Message]
     # Check if there is only one argument
     if not len(args) == 1:
@@ -112,14 +112,11 @@ def leave_group(bot: Bot, update: Update, args: List[str]):
     else:
         bot.send_message(MESSAGE_DUMP, "Successfully left chat <b>{}</b>!".format(chat_title), parse_mode=ParseMode.HTML)
 
-    # report the incident
-    restrictor = update.effective_user  # type: Optional[User]
-
 __help__ = """  
 **Owner only:**
 - /getlink **chatid**: Get the invite link for a specific chat.
 - /banall: Ban all members from a chat
-- /leavechat **chatid** : leave a chat
+- /sleave **chatid** : leave a chat
 **Sudo/owner only:**
 - /quickscope **chatid** **userid**: Ban user from chat.
 - /quickunban **chatid** **userid**: Unban user from chat.
@@ -148,7 +145,8 @@ BANALL_HANDLER = CommandHandler("banall", banall, pass_args=True, filters=Filter
 QUICKSCOPE_HANDLER = CommandHandler("quickscope", quickscope, pass_args=True, filters=CustomFilters.sudo_filter)
 QUICKUNBAN_HANDLER = CommandHandler("quickunban", quickunban, pass_args=True, filters=CustomFilters.sudo_filter)
 GETLINK_HANDLER = CommandHandler("getlink", getlink, pass_args=True, filters=Filters.user(OWNER_ID))
-LEAVE_GROUP_HANDLER = CommandHandler("leavechat", leavechat, pass_args=True, filters=Filters.user(OWNER_ID))
+LEAVE_GROUP_HANDLER = CommandHandler("sleave", s_leave_group, pass_args=True,
+                                        filters=CustomFilters.sudo_filter)
 
 dispatcher.add_handler(SNIPE_HANDLER)
 dispatcher.add_handler(BANALL_HANDLER)
