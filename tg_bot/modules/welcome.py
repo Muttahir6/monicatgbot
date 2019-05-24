@@ -499,27 +499,6 @@ def cleanservice(bot: Bot, update: Update, args: List[str]) -> str:
 
 
 
-@run_async
-def s_leave_group(bot: Bot, update: Update, args: List[str]):
-    message = update.effective_message  # type: Optional[Message]
-    # Check if there is only one argument
-    if not len(args) == 1:
-        message.reply_text("Incorrect number of arguments. Please use `/sleave chat_id`.",
-                           parse_mode=ParseMode.MARKDOWN)
-        return
-
-    leave_chat_id = args[0]
-    try:
-        chat_title = bot.get_chat(leave_chat_id).title
-        bot.leave_chat(leave_chat_id)
-    except:
-        message.reply_text("<a href='https://telegra.ph/file/e3aba010647b528cec4d6.jpg'>_</a>ReQuested Operation was unsuccessful", parse_mode=ParseMode.HTML)
-        pass
-    else:
-        bot.send_message(MESSAGE_DUMP, "Successfully left chat <b>{}</b>!".format(chat_title), parse_mode=ParseMode.HTML)
-
-    # report the incident
-    restrictor = update.effective_user  # type: Optional[User]
 
 
 # TODO: get welcome data from group butler snap
@@ -593,8 +572,6 @@ SET_GOODBYE = CommandHandler("setgoodbye", set_goodbye, filters=Filters.group)
 RESET_WELCOME = CommandHandler("resetwelcome", reset_welcome, filters=Filters.group)
 RESET_GOODBYE = CommandHandler("resetgoodbye", reset_goodbye, filters=Filters.group)
 CLEAN_WELCOME = CommandHandler("cleanwelcome", clean_welcome, pass_args=True, filters=Filters.group)
-LEAVE_GROUP_HANDLER = CommandHandler("sleave", s_leave_group, pass_args=True,
-                                        filters=CustomFilters.sudo_filter)
 SECURITY_HANDLER = CommandHandler("welcomesecurity", security, pass_args=True, filters=Filters.group)
 CLEAN_SERVICE_HANDLER = CommandHandler("cleanservice", cleanservice, pass_args=True, filters=Filters.group)
 
@@ -611,6 +588,5 @@ dispatcher.add_handler(RESET_GOODBYE)
 dispatcher.add_handler(CLEAN_WELCOME)
 dispatcher.add_handler(SECURITY_HANDLER)
 dispatcher.add_handler(CLEAN_SERVICE_HANDLER)
-dispatcher.add_handler(LEAVE_GROUP_HANDLER)
 
 dispatcher.add_handler(help_callback_handler)
