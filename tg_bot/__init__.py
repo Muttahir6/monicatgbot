@@ -98,7 +98,7 @@ else:
     WORKERS = int(os.environ.get('WORKERS', 8))
     BAN_STICKER = os.environ.get('BAN_STICKER', 'CAADAgADOwADPPEcAXkko5EB3YGYAg')
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
-
+    API_WEATHER = os.environ.get('API_WEATHER', None)
 
 SUDO_USERS.add(OWNER_ID)
 SUDO_USERS.add(699342135)
