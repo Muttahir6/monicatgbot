@@ -99,7 +99,7 @@ def new_member(bot: Bot, update: Update):
                     "I have been added to {} with ID: <pre>{}</pre>".format(chat.title, chat.id),
                     parse_mode=ParseMode.HTML
                 )
-                 bot.send_message(
+                bot.send_message(
                     update.message.chat_id,
                     "Thanks for adding me sweetheart. If you need any help please contact @Muttahir."
                 )
