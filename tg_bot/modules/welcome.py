@@ -10,7 +10,7 @@ from telegram.utils.helpers import mention_markdown, mention_html, escape_markdo
 
 import tg_bot.modules.sql.welcome_sql as sql
 from tg_bot import dispatcher, OWNER_ID, LOGGER, MESSAGE_DUMP
-from tg_bot.modules.helper_funcs.chat_status import user_admin, is_user_ban_protected
+from tg_bot.modules.helper_funcs.chat_status import user_admin, is_user_ban_protected, can_delete
 from tg_bot.modules.helper_funcs.misc import build_keyboard, revert_buttons
 from tg_bot.modules.helper_funcs.msg_types import get_welcome_type
 from tg_bot.modules.helper_funcs.string_handling import markdown_parser, \
@@ -93,9 +93,18 @@ def new_member(bot: Bot, update: Update):
                 update.effective_message.reply_text("Master is in the houseeee, let's get this party started!")
                 continue
 
-            # Give start information when add bot to group
+            # Don't welcome yourself
             elif new_mem.id == bot.id:
-                update.effective_message.reply_text("Thanks for adding me Sweetheart!")
+                bot.send_message(
+                    MESSAGE_DUMP,
+                    "I have been added to {} with ID: <pre>{}</pre>".format(chat.title, chat.id),
+                    parse_mode=ParseMode.HTML
+                )
+                bot.send_message(
+                    update.message.chat_id,
+                    "Thanks For Adding Me Sweetheart."
+                )
+                continue
 
             else:
                 # If welcome message is media, send with appropriate function
