@@ -48,12 +48,12 @@ def translate(bot: Bot, update: Update):
 
 
 __help__ = """
- - /t: while replying to a message, will reply with a grammar corrected version
+ - /g: while replying to a message, will reply with a grammar corrected version
 """
 
-__mod_name__ = "Translator"
+__mod_name__ = "Grammer"
 
 
-TRANSLATE_HANDLER = CommandHandler('t', translate)
+TRANSLATE_HANDLER = CommandHandler('g', grammer)
 
 dispatcher.add_handler(TRANSLATE_HANDLER)
