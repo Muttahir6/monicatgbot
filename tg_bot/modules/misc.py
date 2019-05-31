@@ -5,6 +5,7 @@ import random
 import time
 import pyowm
 import re
+import wikipedia
 from pyowm import timeutils, exceptions
 from datetime import datetime
 from typing import Optional, List
@@ -533,6 +534,19 @@ def ud(bot: Bot, update: Update):
   message.reply_text(reply_text)
 
 
+def wiki(bot: Bot, update: Update):
+  query = str(update.effective_message.text[6:])
+  result = '**Search:**\n' + query + '\n\n**Result:**\n' + str(wikipedia.summary(query))
+  update.effective_message.reply_markdown(result)
+
+
+def google(bot: Bot, update: Update):
+  query = update.effective_message.text.split(None, 1)
+  result_ = subprocess.run(['gsearch', str(query)], stdout=subprocess.PIPE)
+  result = str(result_.stdout.decode())
+  update.effective_message.reply_markdown('*Searching:*\n`' + str(query) + '`\n\n*RESULTS:*\n' + result)
+
+
 def execute(bot: Bot, update: Update, args: List[str]):
 
     message = update.effective_message
@@ -598,6 +612,7 @@ __help__ = """
  - /wiki: Query the Wikipedia
  - /removebotkeyboard: Got a nasty bot keyboard stuck in your group?
  - /exec <language> <code> [/stdin <stdin>]: Execute a code in a specified language. Send an empty command to get the suppoerted languages.
+- /google: Google search
 """
 
 __mod_name__ = "Misc"
@@ -605,7 +620,6 @@ __mod_name__ = "Misc"
 ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True, admin_ok=True)
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID), admin_ok=True)
 PING_HANDLER = DisableAbleCommandHandler("ping", ping, admin_ok=True)
-#GOOGLE_HANDLER = DisableAbleCommandHandler("google", google)
 LYRICS_HANDLER = DisableAbleCommandHandler("lyrics", lyrics, pass_args=True, admin_ok=True)
 
 
@@ -627,6 +641,8 @@ PASTE_HANDLER = DisableAbleCommandHandler("paste", paste, pass_args=True)
 GET_PASTE_HANDLER = DisableAbleCommandHandler("getpaste", get_paste_content, pass_args=True)
 PASTE_STATS_HANDLER = DisableAbleCommandHandler("pastestats", get_paste_stats, pass_args=True)
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
+WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
+GOOGLE_HANDLER = DisableAbleCommandHandler("google", google)
 
 
 dispatcher.add_handler(UD_HANDLER)
@@ -650,3 +666,5 @@ dispatcher.add_handler(LYRICS_HANDLER)
 dispatcher.add_handler(REPO_HANDLER)
 dispatcher.add_handler(DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove))
 dispatcher.add_handler(EXECUTE_HANDLER)
+dispatcher.add_handler(WIKI_HANDLER)
+dispatcher.add_handler(GOOGLE_HANDLER)

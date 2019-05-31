@@ -26,3 +26,6 @@ wikipedia
 gTTS
 telegram
 gsearch
+wget
+tldextract
+pprint

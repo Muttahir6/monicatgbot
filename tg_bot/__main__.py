@@ -26,10 +26,10 @@ I'm a modular group management bot maintained by [this wonderful person](https:/
 
 I'm a group manager bot . I'm built in python3, using the python-telegram-bot library,
 
-Click Help button or use /help to find out more about how to use me to my full potential.\n\nWant to add me to your group? [Click here!](t.me/Monicabetarobot?startgroup=true)"""
+Click Help button or use /help to find out more about how to use me to my full potential.\n\nWant to add me to your group? [Click here!](t.me/Monicarobot?startgroup=true)"""
 
 DONATE_STRING = """Heya, glad to hear you want to donate!
-It took lots of work for [my creator](t.me/SonOfLars) to get me to where I am now, and every donation helps \
+It took lots of work for [my creator](t.me/Muttahir) to get me to where I am now, and every donation helps \
 motivate him to make me even better. All the donation money will go to a better VPS to host me, and/or beer \. 
 https://orangefox.tech/donate."""
 
@@ -201,7 +201,7 @@ def control_panel(bot, update):
         else:
             text += "\nNo chat connected!"
 
-        keyboard += [[InlineKeyboardButton(text="⬅️ Back", callback_data="bot_start")]]
+        keyboard += [[InlineKeyboardButton(text="Back", callback_data="bot_start")]]
 
         update.effective_message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
 
@@ -220,7 +220,7 @@ def control_panel(bot, update):
                 CHAT_SETTINGS[module].__mod_name__) + R[0]
 
             keyboard = R[1]
-            keyboard += [[InlineKeyboardButton(text="⬅️ Back", callback_data="cntrl_panel_U(1)")]]
+            keyboard += [[InlineKeyboardButton(text="Back", callback_data="cntrl_panel_U(1)")]]
                 
             query.message.reply_text(text=text, arse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
 
