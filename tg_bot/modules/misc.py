@@ -16,9 +16,10 @@ from hurry.filesize import size
 
 import requests
 from telegram import Message, Chat, Update, Bot, MessageEntity
-from telegram import ParseMode, ReplyKeyboardRemove, ReplyKeyboardMarkup
+from telegram import ParseMode, ReplyKeyboardRemove, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, run_async, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
+from telegram.error import BadRequest
 
 from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, SUPPORT_USERS, WHITELIST_USERS, BAN_STICKER
 from tg_bot.__main__ import GDPR
