@@ -541,13 +541,13 @@ def wiki(bot: Bot, update: Update):
         update.effective_message.reply_text("Enter keywords!")
     else:
         try:
-            pertama = update.effective_message.reply_text("🔄 Loading...")
-            keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(text="🔧 More Info...", url=wikipedia.page(kueri).url)]])
+            pertama = update.effective_message.reply_text(" Loading...")
+            keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(text=" More Info...", url=wikipedia.page(kueri).url)]])
             bot.editMessageText(chat_id=update.effective_chat.id, message_id=pertama.message_id, text=wikipedia.summary(kueri, sentences=10), reply_markup=keyboard)
         except wikipedia.PageError as e:
-            update.effective_message.reply_text(f"⚠ Error: {e}")
+            update.effective_message.reply_text(f" Error: {e}")
         except BadRequest as et :
-            update.effective_message.reply_text(f"⚠ Error: {et}")
+            update.effective_message.reply_text(f" Error: {et}")
 
 
 def google(bot: Bot, update: Update):
