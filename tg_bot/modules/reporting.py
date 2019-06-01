@@ -141,7 +141,7 @@ __help__ = """
 NOTE: neither of these will get triggered if used by admins
 
 *Admin only:*
- - /reports <on/off>: change report setting, or view current status.
+ - /reports <on/off>: change report setting, or view your current status.
    - If done in pm, toggles your status.
    - If in chat, toggles that chat's status.
 """
