@@ -119,6 +119,44 @@ def report(bot: Bot, update: Update) -> str:
     return ""
 
 
+def buttons(bot: Bot, update):
+    query = update.callback_query
+    splitter = query.data.replace("report_", "").split("=")
+    chat = update.effective_chat
+    if splitter[1] == "kick":
+        try:
+            bot.kickChatMember(splitter[0], splitter[2])
+            bot.unbanChatMember(splitter[0], splitter[2])
+            query.answer("Succesfully kicked")
+            return ""
+        except Exception as err:
+            query.answer("Failed to kick")
+            bot.sendMessage(text="Error: {}".format(err),
+                            chat_id=query.message.chat_id,
+                            parse_mode=ParseMode.HTML)
+    elif splitter[1] == "banned":
+        try:
+            bot.kickChatMember(splitter[0], splitter[2])
+            query.answer("Succesfully Banned")
+            return ""
+        except Exception as err:
+            bot.sendMessage(text="Error: {}".format(err),
+                            chat_id=query.message.chat_id,
+                            parse_mode=ParseMode.HTML)
+            query.answer(" Failed to ban")
+    elif splitter[1] == "delete":
+        try:
+            bot.deleteMessage(splitter[0], splitter[3])
+            query.answer("Message Deleted")
+            return ""
+        except Exception as err:
+            bot.sendMessage(text="Error: {}".format(err),
+                                  chat_id=query.message.chat_id,
+                                  parse_mode=ParseMode.HTML)
+            query.answer(" Failed to delete message!")
+
+
+
 def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
 
@@ -149,6 +187,11 @@ NOTE: neither of these will get triggered if used by admins
 REPORT_HANDLER = CommandHandler("report", report, filters=Filters.group)
 SETTING_HANDLER = CommandHandler("reports", report_setting, pass_args=True)
 ADMIN_REPORT_HANDLER = RegexHandler("(?i)@admin(s)?", report)
+
+cntrl_panel_user_callback_handler = CallbackQueryHandler(control_panel_user, pattern=r"panel_reporting_U")
+report_button_user_handler = CallbackQueryHandler(buttons, pattern=r"report_")
+dispatcher.add_handler(cntrl_panel_user_callback_handler)
+dispatcher.add_handler(report_button_user_handler)
 
 dispatcher.add_handler(REPORT_HANDLER, REPORT_GROUP)
 dispatcher.add_handler(ADMIN_REPORT_HANDLER, REPORT_GROUP)
