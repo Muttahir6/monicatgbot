@@ -76,6 +76,19 @@ def report(bot: Bot, update: Update) -> str:
                    "<a href=\"http://telegram.me/{}/{}\">click here</a>".format(chat.username, message.message_id)
 
             should_forward = False
+            keyboard = [
+                [InlineKeyboardButton(u" Message", url="https://t.me/{}/{}".format(chat.username, str(
+                    message.reply_to_message.message_id)))],
+                [InlineKeyboardButton(u" Kick",
+                                      callback_data="report_{}=kick={}={}".format(chat.id, reported_user.id,
+                                                                                  reported_user.first_name)),
+                 InlineKeyboardButton(u" Ban",
+                                      callback_data="report_{}=banned={}={}".format(chat.id, reported_user.id,
+                                                                                    reported_user.first_name))],
+                [InlineKeyboardButton(u" Delete Message",
+                                      callback_data="report_{}=delete={}={}".format(chat.id, reported_user.id,
+                                                                                    message.reply_to_message.message_id))]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
 
         else:
             msg = "{} is calling for admins in \"{}\"!".format(mention_html(user.id, user.first_name),
