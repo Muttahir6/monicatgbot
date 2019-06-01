@@ -16,9 +16,10 @@ from hurry.filesize import size
 
 import requests
 from telegram import Message, Chat, Update, Bot, MessageEntity
-from telegram import ParseMode, ReplyKeyboardRemove, ReplyKeyboardMarkup
+from telegram import ParseMode, ReplyKeyboardRemove, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, run_async, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
+from telegram.error import BadRequest
 
 from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, SUPPORT_USERS, WHITELIST_USERS, BAN_STICKER
 from tg_bot.__main__ import GDPR
@@ -535,9 +536,19 @@ def ud(bot: Bot, update: Update):
 
 
 def wiki(bot: Bot, update: Update):
-  query = str(update.effective_message.text[6:])
-  result = '**Search:**\n' + query + '\n\n**Result:**\n' + str(wikipedia.summary(query))
-  update.effective_message.reply_markdown(result)
+    kueri = re.split(pattern="wiki", string=update.effective_message.text)
+    wikipedia.set_lang("en")
+    if len(str(kueri[1])) == 0:
+        update.effective_message.reply_text("Enter keywords!")
+    else:
+        try:
+            pertama = update.effective_message.reply_text(" Loading...")
+            keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(text=" More Info...", url=wikipedia.page(kueri).url)]])
+            bot.editMessageText(chat_id=update.effective_chat.id, message_id=pertama.message_id, text=wikipedia.summary(kueri, sentences=10), reply_markup=keyboard)
+        except wikipedia.PageError as e:
+            update.effective_message.reply_text(f" Error: {e}")
+        except BadRequest as et :
+            update.effective_message.reply_text(f" Error: {et}")
 
 
 def google(bot: Bot, update: Update):
