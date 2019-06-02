@@ -154,7 +154,7 @@ def send_start(bot, update):
     keyboard += [[InlineKeyboardButton(text="🇺🇸 Language", callback_data="set_lang_"), 
         InlineKeyboardButton(text="❔ Help", callback_data="help_back")]]
 
-    update.effective_message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
+    update.effective_message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN)
 
 
 
@@ -184,7 +184,7 @@ def control_panel(bot, update):
 
         LOGGER.info(query.data)
     else:
-        M_match = "Haruka Aya is best bot" #LMAO, don't uncomment
+        M_match = "Monica is the best bot" #LMAO, don't uncomment
 
     if M_match:
         text = "*Control panel* 🛠"
