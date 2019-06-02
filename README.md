@@ -15,12 +15,11 @@ announcements.
 ## Thanks to
 
 * 1mavarik1 - gmutes, etc 
-* AyraHikari - weather
 * Paul Larsen - marie creator 
 * MrYacha - yana's creator
 * FFBot - for translations functions
 * Midukkibot - For some nice plugins
-
+* HarukaAyaBot - For some awesome bugfixes + some new buttons 🙈
 ## Starting the bot.
 
 Once you've setup your database and your configuration (see below) is complete, simply run:
