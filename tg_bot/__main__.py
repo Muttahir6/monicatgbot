@@ -60,7 +60,7 @@ for module_name in ALL_MODULES:
     if hasattr(imported_module, "__help__") and imported_module.__help__:
         HELPABLE[imported_module.__mod_name__.lower()] = imported_module
 
-    # Chats to migrate on chat_migrated events
+    #Chats to migrate on chat_migrated events
     if hasattr(imported_module, "__migrate__"):
         MIGRATEABLE.append(imported_module)
 
@@ -86,7 +86,7 @@ for module_name in ALL_MODULES:
         USER_SETTINGS[imported_module.__mod_name__.lower()] = imported_module
 
 
-# do not async
+#Do NOT async this!
 def send_help(chat_id, text, keyboard=None):
     if not keyboard:
         keyboard = InlineKeyboardMarkup(paginate_modules(chat_id, 0, HELPABLE, "help"))
@@ -98,37 +98,44 @@ def send_help(chat_id, text, keyboard=None):
 
 @run_async
 def test(bot: Bot, update: Update):
-    # pprint(eval(str(update)))
-    # update.effective_message.reply_text("Hola tester! _I_ *have* `markdown`", parse_mode=ParseMode.MARKDOWN)
+    #pprint(eval(str(update)))
+    #update.effective_message.reply_text("Hola tester! _I_ *have* `markdown`", parse_mode=ParseMode.MARKDOWN)
     update.effective_message.reply_text("This person edited a message")
     print(update.effective_message)
 
 
 @run_async
 def start(bot: Bot, update: Update, args: List[str]):
+    LOGGER.info("Start")
     chat = update.effective_chat  # type: Optional[Chat]
-    query = update.callback_query
+    #query = update.callback_query #Unused variable
     if update.effective_chat.type == "private":
         if len(args) >= 1:
             if args[0].lower() == "help":
-                send_help(update.effective_chat.id, tld(chat.id, "send-help").format(""if not ALLOW_EXCL else tld(chat.id, "\nAll commands can either be used with `/` or `!`.\n")))
+                send_help(update.effective_chat.id, tld(chat.id, "send-help").format(
+                     dispatcher.bot.first_name, "" if not ALLOW_EXCL else tld(
+                         chat.id, "\nAll commands can either be used with `/` or `!`.\n"
+                             )))
 
             elif args[0].lower().startswith("stngs_"):
                 match = re.match("stngs_(.*)", args[0].lower())
                 chat = dispatcher.bot.getChat(match.group(1))
 
                 if is_user_admin(chat, update.effective_user.id):
-                    send_settings(match.group(1), update.effective_user.id, user=False)
+                    send_settings(match.group(1), update.effective_user.id, update, user=False)
                 else:
-                    send_settings(match.group(1), update.effective_user.id, user=True)
+                    send_settings(match.group(1), update.effective_user.id, update, user=True)
 
             elif args[0][1:].isdigit() and "rules" in IMPORTED:
                 IMPORTED["rules"].send_rules(update, args[0], from_pm=True)
 
+            elif args[0].lower() == "controlpanel":
+                control_panel(bot, update)
         else:
             send_start(bot, update)
     else:
-        update.effective_message.reply_text("Yo, whadup?")
+        update.effective_message.reply_text("Hey there! I'm alive :3")
+
 
 def send_start(bot, update):
     #Try to remove old message
@@ -146,7 +153,9 @@ def send_start(bot, update):
     keyboard = [[InlineKeyboardButton(text="🛠 Control panel", callback_data="cntrl_panel_M")]]
     keyboard += [[InlineKeyboardButton(text="🇺🇸 Language", callback_data="set_lang_"), 
         InlineKeyboardButton(text="❔ Help", callback_data="help_back")]]
+
     update.effective_message.reply_text(PM_START.format(escape_markdown(first_name), bot.first_name), reply_markup=InlineKeyboardMarkup(keyboard), disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN)
+
 
 def control_panel(bot, update):
     LOGGER.info("Control panel")
@@ -292,27 +301,27 @@ def error_callback(bot, update, error):
     try:
         raise error
     except Unauthorized:
-        print("unauthorised")
-        print(error)
+        LOGGER.warning("NO NONO1")
+        LOGGER.warning(error)
         # remove update.message.chat_id from conversation list
     except BadRequest:
-        print("network")
-        print("BadRequest caught")
-        print(error)
+        LOGGER.warning("NO NONO2")
+        LOGGER.warning("BadRequest caught")
+        LOGGER.warning(error)
 
         # handle malformed requests - read more below!
     except TimedOut:
-        print("time out")
+        LOGGER.warning("NO NONO3")
         # handle slow connection problems
     except NetworkError:
-        print("no nono4")
+        LOGGER.warning("NO NONO4")
         # handle other connection problems
     except ChatMigrated as err:
-        print("no nono5")
-        print(err)
+        LOGGER.warning("NO NONO5")
+        LOGGER.warning(err)
         # the chat_id of a group has changed, use e.new_chat_id instead
     except TelegramError:
-        print(error)
+        LOGGER.warning(error)
         # handle all other telegram related errors
 
 
@@ -524,7 +533,7 @@ def donate(bot: Bot, update: Update):
     if chat.type == "private":
         update.effective_message.reply_text(DONATE_STRING, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
 
-        if OWNER_ID != 254318997 and DONATION_LINK:
+        if OWNER_ID != 90296554 and DONATION_LINK:
             update.effective_message.reply_text("You can also donate to the person currently running me "
                                                 "[here]({})".format(DONATION_LINK),
                                                 parse_mode=ParseMode.MARKDOWN)
