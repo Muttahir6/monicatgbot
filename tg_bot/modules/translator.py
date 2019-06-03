@@ -12,7 +12,7 @@ from py_translator import Translator
 
 @run_async
 def do_translate(bot: Bot, update: Update, args: List[str]):
-    short_name = "Created By @MonricaRoBot 😬"
+    short_name = "By @MonricaRoBot 😬"
     msg = update.effective_message # type: Optional[Message]
     lan = " ".join(args)
     to_translate_text = msg.reply_to_message.text
