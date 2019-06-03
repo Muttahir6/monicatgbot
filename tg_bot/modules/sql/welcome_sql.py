@@ -189,7 +189,7 @@ def set_del_cmd(chat_id, del_cmd):
         if not curr:
             curr = Welcome(str(chat_id))
 
-        curr.del_commands = int(del_cmd)
+        curr.del_cmd = int(del_cmd)
 
         SESSION.add(curr)
         SESSION.commit()
