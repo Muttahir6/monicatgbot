@@ -19,7 +19,7 @@ announcements.
 * MrYacha - yana's creator
 * FFBot - for translations functions
 * Midukkibot - For some nice plugins
-* HarukaAyaBot - For some awesome bugfixes + some new buttons for reporting and reverse search. Thanks sir 🙈
+* HarukaAyaBot - For some awesome bugfixes + some new buttons for reporting.
 ## Starting the bot.
 
 Once you've setup your database and your configuration (see below) is complete, simply run:
