@@ -12,7 +12,6 @@ from typing import Optional, List
 from pythonping import ping as ping3
 from typing import Optional, List
 from PyLyrics import *
-from hurry.filesize import size
 
 import requests
 from telegram import Message, Chat, Update, Bot, MessageEntity
@@ -307,8 +306,9 @@ def markdown_help(bot: Bot, update: Update):
 
 @run_async
 def stats(bot: Bot, update: Update):
-    update.effective_message.reply_text("Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS])) 
-    
+    update.effective_message.reply_text("Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS]))
+
+
 @run_async 
 @user_admin
 def ping(bot: Bot, update: Update): 
@@ -321,15 +321,7 @@ def ping(bot: Bot, update: Update):
 
 @run_async
 def reply_keyboard_remove(bot: Bot, update: Update):
-    reply_keyboard = []
-    reply_keyboard.append([
-        ReplyKeyboardRemove(
-            remove_keyboard=True
-        )
-    ])
-    reply_markup = ReplyKeyboardRemove(
-        remove_keyboard=True
-    )
+    reply_markup = ReplyKeyboardRemove()
     old_message = bot.send_message(
         chat_id=update.message.chat_id,
         text='trying',
@@ -341,55 +333,6 @@ def reply_keyboard_remove(bot: Bot, update: Update):
         message_id=old_message.message_id
     )
 
-
-@run_async
-def github(bot: Bot, update: Update):
-    message = update.effective_message
-    text = message.text[len('/git '):]
-    usr = get(f'https://api.github.com/users/{text}').json()
-    if usr.get('login'):
-        text = f"*Username:* [{usr['login']}](https://github.com/{usr['login']})"
-
-        whitelist = ['name', 'id', 'type', 'location', 'blog',
-                     'bio', 'followers', 'following', 'hireable',
-                     'public_gists', 'public_repos', 'email',
-                     'company', 'updated_at', 'created_at']
-
-        difnames = {'id': 'Account ID', 'type': 'Account type', 'created_at': 'Account created at',
-                    'updated_at': 'Last updated', 'public_repos': 'Public Repos', 'public_gists': 'Public Gists'}
-
-        goaway = [None, 0, 'null', '']
-
-        for x, y in usr.items():
-            if x in whitelist:
-                if x in difnames:
-                    x = difnames[x]
-                else:
-                    x = x.title()
-
-                if x == 'Account created at' or x == 'Last updated':
-                    y = datetime.strptime(y, "%Y-%m-%dT%H:%M:%SZ")
-
-                if y not in goaway:
-                    if x == 'Blog':
-                        x = "Website"
-                        y = f"[Here!]({y})"
-                        text += ("\n*{}:* {}".format(x, y))
-                    else:
-                        text += ("\n*{}:* `{}`".format(x, y))
-        reply_text = text
-    else:
-        reply_text = "User not found. Make sure you entered valid username!"
-    message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
-
-def repo(bot: Bot, update: Update, args: List[str]):
-    message = update.effective_message
-    text = message.text[len('/repo '):]
-    usr = get(f'https://api.github.com/users/{text}/repos?per_page=40').json()
-    reply_text = "*Repo*\n"
-    for i in range(len(usr)):
-        reply_text += f"[{usr[i]['name']}]({usr[i]['html_url']})\n"
-    message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
 
 LYRICSINFO = "\n[Full Lyrics](http://lyrics.wikia.com/wiki/%s:%s)"
 
@@ -419,112 +362,8 @@ def lyrics(bot: Bot, update: Update, args: List[str]):
                 " ", "_"), song[1].replace(" ", "_"))
             return update.effective_message.reply_text(lyrics + lyricstext, parse_mode="MARKDOWN")
     else:
-        return update.effective_message.reply_text("Invalid syntax! Try Artist - Song name .For example, Luis Fonsi - Despacito", failed=True)
+        return update.effective_message.reply_text("Invalid syntax- try Artist - Title!", failed=True)
 
-BASE_URL = 'https://del.dog'
-
-
-@run_async
-def paste(bot: Bot, update: Update, args: List[str]):
-    message = update.effective_message
-
-    if message.reply_to_message:
-        data = message.reply_to_message.text
-    elif len(args) >= 1:
-        data = message.text.split(None, 1)[1]
-    else:
-        message.reply_text("What am I supposed to do with this?!")
-        return
-
-    r = requests.post(f'{BASE_URL}/documents', data=data.encode('utf-8'))
-
-    if r.status_code == 404:
-        update.effective_message.reply_text('Failed to reach dogbin')
-        r.raise_for_status()
-
-    res = r.json()
-
-    if r.status_code != 200:
-        update.effective_message.reply_text(res['message'])
-        r.raise_for_status()
-
-    key = res['key']
-    if res['isUrl']:
-        reply = f'Shortened URL: {BASE_URL}/{key}\nYou can view stats, etc. [here]({BASE_URL}/v/{key})'
-    else:
-        reply = f'{BASE_URL}/{key}'
-    update.effective_message.reply_text(reply, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
-
-@run_async
-def get_paste_content(bot: Bot, update: Update, args: List[str]):
-    message = update.effective_message
-
-    if len(args) >= 1:
-        key = args[0]
-    else:
-        message.reply_text("Please supply a paste key!")
-        return
-
-    format_normal = f'{BASE_URL}/'
-    format_view = f'{BASE_URL}/v/'
-
-    if key.startswith(format_view):
-        key = key[len(format_view):]
-    elif key.startswith(format_normal):
-        key = key[len(format_normal):]
-
-    r = requests.get(f'{BASE_URL}/raw/{key}')
-
-    if r.status_code != 200:
-        try:
-            res = r.json()
-            update.effective_message.reply_text(res['message'])
-        except Exception:
-            if r.status_code == 404:
-                update.effective_message.reply_text('Failed to reach dogbin')
-            else:
-                update.effective_message.reply_text('Unknown error occured')
-        r.raise_for_status()
-
-    update.effective_message.reply_text('```' + escape_markdown(r.text) + '```', parse_mode=ParseMode.MARKDOWN)
-
-
-@run_async
-def get_paste_stats(bot: Bot, update: Update, args: List[str]):
-    message = update.effective_message
-
-    if len(args) >= 1:
-        key = args[0]
-    else:
-        message.reply_text("Please supply a paste key!")
-        return
-
-    format_normal = f'{BASE_URL}/'
-    format_view = f'{BASE_URL}/v/'
-
-    if key.startswith(format_view):
-        key = key[len(format_view):]
-    elif key.startswith(format_normal):
-        key = key[len(format_normal):]
-
-    r = requests.get(f'{BASE_URL}/documents/{key}')
-
-    if r.status_code != 200:
-        try:
-            res = r.json()
-            update.effective_message.reply_text(res['message'])
-        except Exception:
-            if r.status_code == 404:
-                update.effective_message.reply_text('Failed to reach dogbin')
-            else:
-                update.effective_message.reply_text('Unknown error occured')
-        r.raise_for_status()
-
-    document = r.json()['document']
-    key = document['_id']
-    views = document['viewCount']
-    reply = f'Stats for **[/{key}]({BASE_URL}/{key})**:\nViews: `{views}`'
-    update.effective_message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
 
 @run_async
 def ud(bot: Bot, update: Update):
@@ -536,19 +375,9 @@ def ud(bot: Bot, update: Update):
 
 
 def wiki(bot: Bot, update: Update):
-    kueri = re.split(pattern="wiki", string=update.effective_message.text)
-    wikipedia.set_lang("en")
-    if len(str(kueri[1])) == 0:
-        update.effective_message.reply_text("Enter keywords!")
-    else:
-        try:
-            pertama = update.effective_message.reply_text(" Loading...")
-            keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(text=" More Info...", url=wikipedia.page(kueri).url)]])
-            bot.editMessageText(chat_id=update.effective_chat.id, message_id=pertama.message_id, text=wikipedia.summary(kueri, sentences=10), reply_markup=keyboard)
-        except wikipedia.PageError as e:
-            update.effective_message.reply_text(f" Error: {e}")
-        except BadRequest as et :
-            update.effective_message.reply_text(f" Error: {et}")
+        query = str(update.effective_message.text[6:])
+        result = '**Search:**\n' + query + '\n\n**Result:**\n' + str(wikipedia.summary(query))
+        update.effective_message.reply_markdown(result)
 
 
 def google(bot: Bot, update: Update):
@@ -556,43 +385,6 @@ def google(bot: Bot, update: Update):
   result_ = subprocess.run(['gsearch', str(query)], stdout=subprocess.PIPE)
   result = str(result_.stdout.decode())
   update.effective_message.reply_markdown('*Searching:*\n`' + str(query) + '`\n\n*RESULTS:*\n' + result)
-
-
-def execute(bot: Bot, update: Update, args: List[str]):
-
-    message = update.effective_message
-    text = ' '.join(args)
-    regex = re.search('^([\w.#+]+)\s+([\s\S]+?)(?:\s+\/stdin\s+([\s\S]+))?$', text, re.IGNORECASE)
-
-    if not regex:
-        available_languages = ', '.join(languages.keys())
-        message.reply_text('*The availale languages are:*\n`{}`'.format(available_languages), parse_mode=ParseMode.MARKDOWN)
-        return
-
-    language = regex.group(1)
-    code = regex.group(2)
-    stdin = regex.group(3)
-
-    try:
-        regexter = Rextester(language, code, stdin)
-    except CompilerError as exc: # Exception on empy code or missing output
-        message.reply_text(exc)
-        return
-
-    output = ""
-    output += "*Language:*\n`{}`".format(language)
-    output += "*\n\nSource:*\n`{}`".format(code)
-
-    if regexter.result:
-        output += "*\n\nResult:*\n`{}`".format(regexter.result)
-
-    if regexter.warnings:
-        output += "\n\n*Warnings:*\n`{}`\n".format(regexter.warnings)
-
-    if regexter.errors:
-        output += "\n\n*Errors:*\n'{}`".format(regexter.errors)
-
-    message.reply_text(output, parse_mode=ParseMode.MARKDOWN)
 
 
 @run_async
@@ -613,8 +405,6 @@ __help__ = """
  - /stickerid: reply to a sticker to me to tell you its file ID.
  - /getsticker: reply to a sticker to me to upload its raw PNG file.
  - /markdownhelp: quick summary of how markdown works in telegram - can only be called in private chats.
- - /git: Returns info about a GitHub user or organization.
- - /repo: Return the GitHub user or organization repository list (Limited at 40)
  - /lyrics: Find your favorite songs lyrics!
  - /paste: Create a paste or a shortened url using [dogbin](https://del.dog)
  - /getpaste: Get the content of a paste or shortened url from [dogbin](https://del.dog)
@@ -638,28 +428,19 @@ INSULTS_HANDLER = DisableAbleCommandHandler("insults", insults, admin_ok=True)
 RUNS_HANDLER = DisableAbleCommandHandler("runs", runs, admin_ok=True)
 SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True, admin_ok=True)
 INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True, admin_ok=True)
-GITHUB_HANDLER = DisableAbleCommandHandler("git", github, admin_ok=True)
-REPO_HANDLER = DisableAbleCommandHandler("repo", repo, pass_args=True, admin_ok=True)
 
 ECHO_HANDLER = CommandHandler("send", echo)
 MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private)
 
 STATS_HANDLER = CommandHandler("stats", stats, filters=Filters.user(OWNER_ID))
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
-EXECUTE_HANDLER = CommandHandler("exec", execute, pass_args=True, filters=CustomFilters.sudo_filter)
 
-PASTE_HANDLER = DisableAbleCommandHandler("paste", paste, pass_args=True)
-GET_PASTE_HANDLER = DisableAbleCommandHandler("getpaste", get_paste_content, pass_args=True)
-PASTE_STATS_HANDLER = DisableAbleCommandHandler("pastestats", get_paste_stats, pass_args=True)
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
 GOOGLE_HANDLER = DisableAbleCommandHandler("google", google)
 
 
 dispatcher.add_handler(UD_HANDLER)
-dispatcher.add_handler(PASTE_HANDLER)
-dispatcher.add_handler(GET_PASTE_HANDLER)
-dispatcher.add_handler(PASTE_STATS_HANDLER)
 dispatcher.add_handler(ID_HANDLER)
 dispatcher.add_handler(IP_HANDLER)
 dispatcher.add_handler(INSULTS_HANDLER)
@@ -672,10 +453,7 @@ dispatcher.add_handler(STATS_HANDLER)
 dispatcher.add_handler(GDPR_HANDLER)
 dispatcher.add_handler(PING_HANDLER)
 #dispatcher.add_handler(GOOGLE_HANDLER)
-dispatcher.add_handler(GITHUB_HANDLER)
 dispatcher.add_handler(LYRICS_HANDLER)
-dispatcher.add_handler(REPO_HANDLER)
 dispatcher.add_handler(DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove))
-dispatcher.add_handler(EXECUTE_HANDLER)
 dispatcher.add_handler(WIKI_HANDLER)
 dispatcher.add_handler(GOOGLE_HANDLER)

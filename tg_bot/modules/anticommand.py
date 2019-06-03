@@ -32,7 +32,7 @@ def rem_cmds(bot: Bot, update: Update, args: List[str]) -> str:
         return ""
 
     if args[0].lower() in ("on", "yes"):
-        sql.set_cmd_joined(str(chat.id), True)
+        sql.set_del_cmd(str(chat.id), True)
         update.effective_message.reply_text("OK, I will try to delete commandzzz!")
         return "<b>{}:</b>" \
                "\n#ANTI_COMMAND" \
@@ -40,7 +40,7 @@ def rem_cmds(bot: Bot, update: Update, args: List[str]) -> str:
                "\nHas toggled @AntiCommandBot to <code>ON</code>.".format(html.escape(chat.title),
                                                                          mention_html(user.id, user.first_name))
     elif args[0].lower() in ("off", "no"):
-        sql.set_cmd_joined(str(chat.id), False)
+        sql.set_del_cmd(str(chat.id), False)
         update.effective_message.reply_text("Ok, I will not delete commandzzz from now on!")
         return "<b>{}:</b>" \
                "\n#ANTI_COMMAND" \

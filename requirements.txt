@@ -7,18 +7,10 @@ psycopg2
 feedparser
 pyowm
 pythonping
-pynewtonmath
-#memes from SkittBot
-spongemock
-zalgo-text
 geopy
-nltk
 aiohttp>=2.2.5
 Pillow>=4.2.0
-#Cool stuff by Peak
 PyLyrics
-#AEX
-hurry.filesize
 #translator
 py_translator
 beautifulsoup4==4.6.3
@@ -26,7 +18,6 @@ wikipedia
 gTTS
 telegram
 gsearch
-wget
 tldextract
 pprint
 telegraph

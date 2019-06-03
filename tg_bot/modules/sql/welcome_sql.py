@@ -183,13 +183,13 @@ def get_clean_pref(chat_id):
     return False
 
 
-def set_cmd_joined(chat_id, cmd_joined):
+def set_del_cmd(chat_id, del_cmd):
     with INSERTION_LOCK:
         curr = SESSION.query(Welcome).get(str(chat_id))
         if not curr:
             curr = Welcome(str(chat_id))
 
-        curr.del_commands = int(cmd_joined)
+        curr.del_cmd = int(del_cmd)
 
         SESSION.add(curr)
         SESSION.commit()
@@ -200,7 +200,7 @@ def get_cmd_pref(chat_id):
     SESSION.close()
 
     if welc:
-        return welc.del_commands
+        return welc.del_cmd
 
     return False
 
