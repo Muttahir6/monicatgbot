@@ -183,7 +183,7 @@ def get_clean_pref(chat_id):
     return False
 
 
-def set_del_cmd(chat_id, cmd_joined):
+def set_del_cmd(chat_id, del_cmd):
     with INSERTION_LOCK:
         curr = SESSION.query(Welcome).get(str(chat_id))
         if not curr:
