@@ -26,10 +26,7 @@ from tg_bot.__main__ import STATS, USER_INFO
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.extraction import extract_user
 from tg_bot.modules.helper_funcs.filters import CustomFilters
-from tg_bot.modules.rextester.api import Rextester, CompilerError
-from tg_bot.modules.rextester.langs import languages
 from tg_bot.modules.helper_funcs.chat_status import is_user_admin, user_admin, can_restrict 
-
 from tg_bot.modules.sql.translation import prev_locale
 
 from tg_bot.modules.translations.strings import tld
@@ -406,14 +403,10 @@ __help__ = """
  - /getsticker: reply to a sticker to me to upload its raw PNG file.
  - /markdownhelp: quick summary of how markdown works in telegram - can only be called in private chats.
  - /lyrics: Find your favorite songs lyrics!
- - /paste: Create a paste or a shortened url using [dogbin](https://del.dog)
- - /getpaste: Get the content of a paste or shortened url from [dogbin](https://del.dog)
- - /pastestats: Get stats of a paste or shortened url from [dogbin](https://del.dog)
  - /ud: Type the word or expression you want to search. For example /ud Gay
  - /wiki: Query the Wikipedia
  - /removebotkeyboard: Got a nasty bot keyboard stuck in your group?
- - /exec <language> <code> [/stdin <stdin>]: Execute a code in a specified language. Send an empty command to get the suppoerted languages.
-- /google: Google search
+ - /google: Google search
 """
 
 __mod_name__ = "Misc"
