@@ -13,9 +13,7 @@ Pillow>=4.2.0
 PyLyrics
 #translator
 py_translator
-beautifulsoup4==4.6.3
 wikipedia
-gTTS
 telegram
 gsearch
 tldextract
