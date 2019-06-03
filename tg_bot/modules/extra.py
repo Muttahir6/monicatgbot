@@ -52,7 +52,6 @@ __help__ = """
  - /table : get flip/unflip :v.
  - /decide : Randomly answers yes/no/maybe
  - /toss : Tosses A coin
- - /bluetext : check urself :V
  - /roll : Roll a dice.
 """
 
