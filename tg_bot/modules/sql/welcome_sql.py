@@ -183,28 +183,6 @@ def get_clean_pref(chat_id):
     return False
 
 
-def set_del_cmd(chat_id, del_cmd):
-    with INSERTION_LOCK:
-        curr = SESSION.query(Welcome).get(str(chat_id))
-        if not curr:
-            curr = Welcome(str(chat_id))
-
-        curr.del_cmd = int(del_cmd)
-
-        SESSION.add(curr)
-        SESSION.commit()
-
-
-def get_cmd_pref(chat_id):
-    welc = SESSION.query(Welcome).get(str(chat_id))
-    SESSION.close()
-
-    if welc:
-        return welc.del_cmd
-
-    return False
-
-
 def set_welc_preference(chat_id, should_welcome):
     with INSERTION_LOCK:
         curr = SESSION.query(Welcome).get(str(chat_id))
