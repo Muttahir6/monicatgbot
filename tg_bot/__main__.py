@@ -30,7 +30,7 @@ Click Help button or use /help to find out more about how to use me to my full p
 
 DONATE_STRING = """Heya, glad to hear you want to donate!
 It took lots of work for [my creator](t.me/Muttahir) to get me to where I am now, and every donation helps \
-motivate him to make me even better. All the donation money will go to a better VPS to host me, and/or beer \. 
+motivate him to make me even better. All the donation money will go to a better VPS to host me \. 
 https://orangefox.tech/donate."""
 
 
