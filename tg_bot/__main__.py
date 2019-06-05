@@ -30,7 +30,7 @@ Click Help button or use /help to find out more about how to use me to my full p
 
 DONATE_STRING = """Heya, glad to hear you want to donate!
 It took lots of work for [my creator](t.me/Muttahir) to get me to where I am now, and every donation helps \
-motivate him to make me even better. All the donation money will go to a better VPS to host me, and/or beer \. 
+motivate him to make me even better. All the donation money will go to a better VPS to host me \. 
 https://orangefox.tech/donate."""
 
 
@@ -106,35 +106,29 @@ def test(bot: Bot, update: Update):
 
 @run_async
 def start(bot: Bot, update: Update, args: List[str]):
-    LOGGER.info("Start")
     chat = update.effective_chat  # type: Optional[Chat]
-    #query = update.callback_query #Unused variable
+    query = update.callback_query
     if update.effective_chat.type == "private":
         if len(args) >= 1:
             if args[0].lower() == "help":
-                send_help(update.effective_chat.id, tld(chat.id, "send-help").format(
-                     dispatcher.bot.first_name, "" if not ALLOW_EXCL else tld(
-                         chat.id, "\nAll commands can either be used with `/` or `!`.\n"
-                             )))
+                send_help(update.effective_chat.id, tld(chat.id, "send-help").format(""if not ALLOW_EXCL else tld(chat.id, "\nAll commands can either be used with `/` or `!`.\n")))
 
             elif args[0].lower().startswith("stngs_"):
                 match = re.match("stngs_(.*)", args[0].lower())
                 chat = dispatcher.bot.getChat(match.group(1))
 
                 if is_user_admin(chat, update.effective_user.id):
-                    send_settings(match.group(1), update.effective_user.id, update, user=False)
+                    send_settings(match.group(1), update.effective_user.id, user=False)
                 else:
-                    send_settings(match.group(1), update.effective_user.id, update, user=True)
+                    send_settings(match.group(1), update.effective_user.id, user=True)
 
             elif args[0][1:].isdigit() and "rules" in IMPORTED:
                 IMPORTED["rules"].send_rules(update, args[0], from_pm=True)
 
-            elif args[0].lower() == "controlpanel":
-                control_panel(bot, update)
         else:
             send_start(bot, update)
     else:
-        update.effective_message.reply_text("Hey there! I'm alive :3")
+        update.effective_message.reply_text("Yo, whadup?")
 
 
 def send_start(bot, update):
