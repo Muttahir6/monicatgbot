@@ -61,12 +61,6 @@ def report(bot: Bot, update: Update) -> str:
         chat_name = chat.title or chat.first or chat.username
         admin_list = chat.get_administrators()
 
-        #if reported_user == "483808054":
-        #    continue
-       # 
-        #if user.id == "435606081":
-        #    continue
-
         if chat.username and chat.type == Chat.SUPERGROUP:
             msg = "<b>{}:</b>" \
                   "\n<b>Reported user:</b> {} (<code>{}</code>)" \
