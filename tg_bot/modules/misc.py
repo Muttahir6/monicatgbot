@@ -182,16 +182,18 @@ def info(bot: Bot, update: Update, args: List[str]):
 
 @run_async
 def get_time(bot: Bot, update: Update, args: List[str]):
+    chat = update.effective_chat  # type: Optional[Chat]
     location = " ".join(args)
     if location.lower() == bot.first_name.lower():
-        update.effective_message.reply_text("Its always banhammer time for me!")
-        bot.send_sticker(update.effective_chat.id, BAN_STICKER)
+        update.effective_message.reply_text(tld(chat.id, "Its always banhammer time for me!"))
+        bot.send_sticker(chat.id, BAN_STICKER)
         return
 
-    res = requests.get(GMAPS_LOC, params=dict(address=location))
+    res = requests.get(GMAPS_LOC, params=dict(address=location, key=MAPS_API))
 
     if res.status_code == 200:
         loc = json.loads(res.text)
+        print(loc)
         if loc.get('status') == 'OK':
             lat = loc['results'][0]['geometry']['location']['lat']
             long = loc['results'][0]['geometry']['location']['lng']
@@ -214,12 +216,13 @@ def get_time(bot: Bot, update: Update, args: List[str]):
                 location = country
 
             timenow = int(datetime.utcnow().timestamp())
-            res = requests.get(GMAPS_TIME, params=dict(location="{},{}".format(lat, long), timestamp=timenow))
+            res = requests.get(GMAPS_TIME, params=dict(location="{},{}".format(lat, long), timestamp=timenow, key=MAPS_API))
+
             if res.status_code == 200:
                 offset = json.loads(res.text)['dstOffset']
                 timestamp = json.loads(res.text)['rawOffset']
                 time_there = datetime.fromtimestamp(timenow + timestamp + offset).strftime("%H:%M:%S on %A %d %B")
-                update.message.reply_text("It's {} in {}".format(time_there, location))
+                update.message.reply_text(tld(chat.id, "It's {} in {}").format(time_there, location))
 
 
 @run_async 
@@ -413,7 +416,8 @@ ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True, admin_ok=Tr
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID), admin_ok=True)
 PING_HANDLER = DisableAbleCommandHandler("ping", ping, admin_ok=True)
 LYRICS_HANDLER = DisableAbleCommandHandler("lyrics", lyrics, pass_args=True, admin_ok=True)
-TIME_HANDLER = CommandHandler("time", get_time, pass_args=True)
+
+TIME_HANDLER = DisableAbleCommandHandler("time", get_time, pass_args=True)
 
 
 INSULTS_HANDLER = DisableAbleCommandHandler("insults", insults, admin_ok=True)
