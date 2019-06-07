@@ -395,6 +395,7 @@ def insults(bot: Bot, update: Update):
 __help__ = """
  - /id: get the current group id. If used by replying to a message, gets that user's id.
  - /runs: reply a random string from an array of replies.
+ - /time <place>: gives the local time at the given place.
  - /insults: reply a random string from an array of replies.
  - /slap: slap a user, or get slapped if not a reply.
  - /info: get information about a user.
@@ -415,6 +416,7 @@ ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True, admin_ok=Tr
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID), admin_ok=True)
 PING_HANDLER = DisableAbleCommandHandler("ping", ping, admin_ok=True)
 LYRICS_HANDLER = DisableAbleCommandHandler("lyrics", lyrics, pass_args=True, admin_ok=True)
+TIME_HANDLER = CommandHandler("time", get_time, pass_args=True)
 
 
 INSULTS_HANDLER = DisableAbleCommandHandler("insults", insults, admin_ok=True)
@@ -450,3 +452,4 @@ dispatcher.add_handler(LYRICS_HANDLER)
 dispatcher.add_handler(DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove))
 dispatcher.add_handler(WIKI_HANDLER)
 dispatcher.add_handler(GOOGLE_HANDLER)
+dispatcher.add_handler(TIME_HANDLER)
