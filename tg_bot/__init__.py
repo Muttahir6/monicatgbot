@@ -57,6 +57,8 @@ if ENV:
     WORKERS = int(os.environ.get('WORKERS', 8))
     BAN_STICKER = os.environ.get('BAN_STICKER', 'CAADAgADOwADPPEcAXkko5EB3YGYAg')
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
+    API_WEATHER = os.environ.get('API_WEATHER', '772a4922c8dae7a284168bb971033b56')
+
 
 else:
     from tg_bot.config import Development as Config
