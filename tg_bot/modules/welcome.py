@@ -102,7 +102,7 @@ def new_member(bot: Bot, update: Update):
                 )	                
                 bot.send_message(	
                     update.message.chat_id,	
-                    "Thanks For Adding Me Sweetheart. If you have any question you can contact my boss @Muttahir."	
+                    "Thanks For Adding Me Sweetheart. Ineed to be Admin to work properly. If you have any question you can Ask @Muttahir."	
                 )	
                 continue
 
