@@ -60,7 +60,13 @@ def report(bot: Bot, update: Update) -> str:
         reported_user = message.reply_to_message.from_user  # type: Optional[User]
         chat_name = chat.title or chat.first or chat.username
         admin_list = chat.get_administrators()
-      
+
+        #if reported_user == "483808054":
+        #    continue
+       # 
+        #if user.id == "435606081":
+        #    continue
+
         if chat.username and chat.type == Chat.SUPERGROUP:
             msg = "<b>{}:</b>" \
                   "\n<b>Reported user:</b> {} (<code>{}</code>)" \
@@ -77,15 +83,15 @@ def report(bot: Bot, update: Update) -> str:
 
             should_forward = False
             keyboard = [
-                [InlineKeyboardButton(u"Message", url="https://t.me/{}/{}".format(chat.username, str(
+                [InlineKeyboardButton(u"👉 Message", url="https://t.me/{}/{}".format(chat.username, str(
                     message.reply_to_message.message_id)))],
-                [InlineKeyboardButton(u"Kick",
+                [InlineKeyboardButton(u"✴️ Kick",
                                       callback_data="report_{}=kick={}={}".format(chat.id, reported_user.id,
                                                                                   reported_user.first_name)),
-                 InlineKeyboardButton(u"Ban",
+                 InlineKeyboardButton(u"🚫 Ban",
                                       callback_data="report_{}=banned={}={}".format(chat.id, reported_user.id,
                                                                                     reported_user.first_name))],
-                [InlineKeyboardButton(u"Delete Message",
+                [InlineKeyboardButton(u"❌ Delete Message",
                                       callback_data="report_{}=delete={}={}".format(chat.id, reported_user.id,
                                                                                     message.reply_to_message.message_id))]]
             reply_markup = InlineKeyboardMarkup(keyboard)
@@ -243,3 +249,4 @@ dispatcher.add_handler(report_button_user_handler)
 
 dispatcher.add_handler(REPORT_HANDLER, REPORT_GROUP)
 dispatcher.add_handler(ADMIN_REPORT_HANDLER, REPORT_GROUP)
+dispatcher.add_handler(SETTING_HANDLER)
