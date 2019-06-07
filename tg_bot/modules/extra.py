@@ -47,12 +47,29 @@ def table(bot: Bot, update: Update):
           else:
               update.message.reply_text("Go do some work instead of flippin tables you useless fellow.")
 		
+
+@run_async
+def shout(bot: Bot, update: Update, args):
+    msg = "```"
+    text = " ".join(args)
+    result = []
+    result.append(' '.join([s for s in text]))
+    for pos, symbol in enumerate(text[1:]):
+        result.append(symbol + ' ' + '  ' * pos + symbol)
+    result = list("\n".join(result))
+    result[0] = text[0]
+    result = "".join(result)
+    msg = "```\n" + result + "```"
+    return update.effective_message.reply_text(msg, parse_mode="MARKDOWN")
+
+
 __help__ = """
  - /shrug : get shrug XD.
  - /table : get flip/unflip :v.
  - /decide : Randomly answers yes/no/maybe
  - /toss : Tosses A coin
  - /roll : Roll a dice.
+ - /shout <keyword>: write anything you want to give loud shout.
 """
 
 __mod_name__ = "Extras"
@@ -62,9 +79,11 @@ TOSS_HANDLER = DisableAbleCommandHandler("toss", toss)
 SHRUG_HANDLER = DisableAbleCommandHandler("shrug", shrug)
 DECIDE_HANDLER = DisableAbleCommandHandler("decide", decide)
 TABLE_HANDLER = DisableAbleCommandHandler("table", table)
+SHOUT_HANDLER = DisableAbleCommandHandler("shout", shout, pass_args=True)
 
 dispatcher.add_handler(ROLL_HANDLER)
 dispatcher.add_handler(TOSS_HANDLER)
 dispatcher.add_handler(SHRUG_HANDLER)
 dispatcher.add_handler(DECIDE_HANDLER)
 dispatcher.add_handler(TABLE_HANDLER)
+dispatcher.add_handler(SHOUT_HANDLER)
