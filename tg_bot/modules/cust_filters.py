@@ -212,20 +212,21 @@ def reply_filter(bot: Bot, update: Update):
                 keyboard = InlineKeyboardMarkup(keyb)
 
                 try:
-                    message.reply_text(filt.reply, parse_mode=ParseMode.HTML,
+                    message.reply_text(filt.reply, parse_mode=ParseMode.MARKDOWN,
                                        disable_web_page_preview=True,
                                        reply_markup=keyboard)
                 except BadRequest as excp:
                     if excp.message == "Unsupported url protocol":
                         message.reply_text("You seem to be trying to use an unsupported url protocol. Telegram "
                                            "doesn't support buttons for some protocols, such as tg://. Please try "
-                                           "again.")
+                                           "again, or ask in @YanaBotGroup for help.")
                     elif excp.message == "Reply message not found":
                         bot.send_message(chat.id, filt.reply, parse_mode=ParseMode.MARKDOWN,
                                          disable_web_page_preview=True,
                                          reply_markup=keyboard)
                     else:
-                        message.reply_text("This note could not be sent, as it is incorrectly formatted.")
+                        message.reply_text("This note could not be sent, as it is incorrectly formatted. Ask in "
+                                           "@YanaBotGroup if you can't figure out why!")
                         LOGGER.warning("Message %s could not be parsed", str(filt.reply))
                         LOGGER.exception("Could not parse filter %s in chat %s", str(filt.keyword), str(chat.id))
 
@@ -248,15 +249,21 @@ def __chat_settings__(bot, update, chat, chatP, user):
     return "There are `{}` custom filters here.".format(len(cust_filters))
 
 
-__help__ = """
+__help__ = __help__ = """
+Make your chat more lively with filters; The bot will reply to certain words!
+Filters are case insensitive; every time someone says your trigger words, {} will reply something else! can be used to create your own commands, if desired.
  - /filters: list all active filters in this chat.
-
 *Admin only:*
- - /filter <keyword> <reply message>: add a filter to this chat. The bot will now reply that message whenever 'keyword'\
-is mentioned. If you reply to a sticker with a keyword, the bot will reply with that sticker. NOTE: all filter \
-keywords are in lowercase. If you want your keyword to be a sentence, use quotes. eg: /filter "hey there" How you \
-doin?
+ - /filter <keyword> <reply message>: Every time someone says "word", the bot will reply with "sentence". For multiple word filters, quote the first word.
  - /stop <filter keyword>: stop that filter.
+ 
+ An example of how to set a filter would be via:
+`/filter hello Hello there! How are you?`
+A multiword filter could be set via:
+`/filter "hello friend" Hello back! Long time no see!`
+If you want to save an image, gif, or sticker, or any other data, do the following:
+`/filter word while replying to a sticker or whatever data you'd like. Now, every time someone mentions "word", that sticker will be sent as a reply.`
+Now, anyone saying "hello" will be replied to with "Hello there! How are you?".
 """
 
 __mod_name__ = "Filters"
