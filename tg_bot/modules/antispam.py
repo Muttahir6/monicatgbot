@@ -319,6 +319,10 @@ def gmute(bot: Bot, update: Update, args: List[str]):
         message.reply_text("That's not a user!")
         return
 
+    if os.environ['GPROCESS'] == '1':
+        message.reply_text("Leave me alone, I'm busy, Someone is using global stuff.")
+        return
+
     if sql.is_user_gmuted(user_id):
         if not reason:
             message.reply_text("This user is already gmuted; I'd change the reason, but you haven't given me one...")
@@ -335,13 +339,15 @@ def gmute(bot: Bot, update: Update, args: List[str]):
 
     message.reply_text("*Gets duct tape ready* 😉")
 
+
     muter = update.effective_user  # type: Optional[User]
-    send_to_list(bot, SUDO_USERS + SUPPORT_USERS,
+    bot.send_message(MESSAGE_DUMP,
                  "{} is gmuting user {} "
                  "because:\n{}".format(mention_html(muter.id, muter.first_name),
                                        mention_html(user_chat.id, user_chat.first_name), reason or "No reason given"),
-                 html=True)
-
+                 parse_mode=ParseMode.HTML)
+    
+    os.environ['GPROCESS'] = '1'
     sql.gmute_user(user_id, user_chat.username or user_chat.first_name, reason)
 
     chats = get_all_chats()
@@ -385,9 +391,9 @@ def gmute(bot: Bot, update: Update, args: List[str]):
         except TelegramError:
             pass
 
-    send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "gmute complete!")
+    os.environ['GPROCESS'] = '0'
+    bot.send_message(MESSAGE_DUMP, "gmute complete!")
     message.reply_text("Person has been gmuted.")
-
 
 @run_async
 def ungmute(bot: Bot, update: Update, args: List[str]):
@@ -407,15 +413,20 @@ def ungmute(bot: Bot, update: Update, args: List[str]):
         message.reply_text("This user is not gmuted!")
         return
 
+    if os.environ['GPROCESS'] == '1':
+        message.reply_text("Leave me alone, I'm busy, Someone is using global stuff.")
+        return
+
     muter = update.effective_user  # type: Optional[User]
 
     message.reply_text("I'll let {} speak again, globally.".format(user_chat.first_name))
 
-    send_to_list(bot, SUDO_USERS + SUPPORT_USERS,
+    bot.send_message(MESSAGE_DUMP,
                  "{} has ungmuted user {}".format(mention_html(muter.id, muter.first_name),
                                                    mention_html(user_chat.id, user_chat.first_name)),
-                 html=True)
+                 parse_mode=ParseMode.HTML)
 
+    os.environ['GPROCESS'] = '1'
     chats = get_all_chats()
     for chat in chats:
         chat_id = chat.chat_id
@@ -459,7 +470,9 @@ def ungmute(bot: Bot, update: Update, args: List[str]):
 
     sql.ungmute_user(user_id)
 
-    send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "un-gmute complete!")
+    os.environ['GPROCESS'] = '0'
+
+    bot.send_message(MESSAGE_DUMP, "un-gmute complete!")
 
     message.reply_text("Person has been un-gmuted.")
 
@@ -489,26 +502,6 @@ def check_and_mute(bot, update, user_id, should_message=True):
         bot.restrict_chat_member(update.effective_chat.id, user_id, can_send_messages=False)
         if should_message:
             update.effective_message.reply_text("This is a bad person, I'll silence them for you!")
-
-
-@run_async
-def enforce_gmute(bot: Bot, update: Update):
-    # Not using @restrict handler to avoid spamming - just ignore if cant gmute.
-    if sql.does_chat_gban(update.effective_chat.id) and update.effective_chat.get_member(bot.id).can_restrict_members:
-        user = update.effective_user  # type: Optional[User]
-        chat = update.effective_chat  # type: Optional[Chat]
-        msg = update.effective_message  # type: Optional[Message]
-
-        if user and not is_user_admin(chat, user.id):
-            check_and_mute(bot, update, user.id, should_message=True)
-        if msg.new_chat_members:
-            new_members = update.effective_message.new_chat_members
-            for mem in new_members:
-                check_and_mute(bot, update, mem.id, should_message=True)
-        if msg.reply_to_message:
-            user = msg.reply_to_message.from_user  # type: Optional[User]
-            if user and not is_user_admin(chat, user.id):
-                check_and_mute(bot, update, user.id, should_message=True)
 
 
 @run_async
