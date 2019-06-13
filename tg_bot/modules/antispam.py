@@ -309,10 +309,6 @@ def gmute(bot: Bot, update: Update, args: List[str]):
         message.reply_text("-_- So funny, lets gmute myself why don't I? Nice try.")
         return
 
-    if user_chat.first_name == '':
-        message.reply_text("That's a deleted account! Why even bother gmuting them?")
-        return
-
     try:
         user_chat = bot.get_chat(user_id)
     except BadRequest as excp:
@@ -321,10 +317,6 @@ def gmute(bot: Bot, update: Update, args: List[str]):
 
     if user_chat.type != 'private':
         message.reply_text("That's not a user!")
-        return
-
-    if os.environ['GPROCESS'] == '1':
-        message.reply_text("Leave me alone, I'm busy, Someone is using global stuff.")
         return
 
     if sql.is_user_gmuted(user_id):
@@ -344,60 +336,56 @@ def gmute(bot: Bot, update: Update, args: List[str]):
     message.reply_text("*Gets duct tape ready* 😉")
 
     muter = update.effective_user  # type: Optional[User]
-    bot.send_message(MESSAGE_DUMP,
+    send_to_list(bot, SUDO_USERS + SUPPORT_USERS,
                  "{} is gmuting user {} "
                  "because:\n{}".format(mention_html(muter.id, muter.first_name),
                                        mention_html(user_chat.id, user_chat.first_name), reason or "No reason given"),
-                 parse_mode=ParseMode.HTML)
+                 html=True)
 
-    os.environ['GPROCESS'] = '1'
     sql.gmute_user(user_id, user_chat.username or user_chat.first_name, reason)
 
-
-    #chats = get_all_chats()
-    #for chat in chats:
-    #    chat_id = chat.chat_id
+    chats = get_all_chats()
+    for chat in chats:
+        chat_id = chat.chat_id
 
         # Check if this group has disabled gmutes
-        #if not sql.does_chat_gban(chat_id):
-        #    continue
+        if not sql.does_chat_gban(chat_id):
+            continue
 
-        #try:
-        #    bot.restrict_chat_member(chat_id, user_id, can_send_messages=False)
-        #except BadRequest as excp:
-        #    if excp.message == "User is an administrator of the chat":
-        #        pass
-        #    elif excp.message == "Chat not found":
-        #        pass
-        #    elif excp.message == "Not enough rights to restrict/unrestrict chat member":
-        #        pass
-        #    elif excp.message == "User_not_participant":
-        #        pass
-        #    elif excp.message == "Peer_id_invalid":  # Suspect this happens when a group is suspended by telegram.
-        #        pass
-        #    elif excp.message == "Group chat was deactivated":
-        #        pass
-        #    elif excp.message == "Need to be inviter of a user to kick it from a basic group":
-        #        pass
-        #    elif excp.message == "Chat_admin_required":
-        #        pass
-        #    elif excp.message == "Only the creator of a basic group can kick group administrators":
-        #        pass
-        #    elif excp.message == "Method is available only for supergroups":
-        #        pass
-        #    elif excp.message == "Can't demote chat creator":
-        #        pass
-        #    else:
-        #        message.reply_text("Could not gmute due to: {}".format(excp.message))
-        #        bot.send_message(MESSAGE_DUMP, "Could not gmute due to: {}".format(excp.message))
-        #        sql.ungmute_user(user_id)
-        #        os.environ['GPROCESS'] = '0'
-        #        return
-        #except TelegramError:
-        #    pass
+        try:
+            bot.restrict_chat_member(chat_id, user_id, can_send_messages=False)
+        except BadRequest as excp:
+            if excp.message == "User is an administrator of the chat":
+                pass
+            elif excp.message == "Chat not found":
+                pass
+            elif excp.message == "Not enough rights to restrict/unrestrict chat member":
+                pass
+            elif excp.message == "User_not_participant":
+                pass
+            elif excp.message == "Peer_id_invalid":  # Suspect this happens when a group is suspended by telegram.
+                pass
+            elif excp.message == "Group chat was deactivated":
+                pass
+            elif excp.message == "Need to be inviter of a user to kick it from a basic group":
+                pass
+            elif excp.message == "Chat_admin_required":
+                pass
+            elif excp.message == "Only the creator of a basic group can kick group administrators":
+                pass
+            elif excp.message == "Method is available only for supergroups":
+                pass
+            elif excp.message == "Can't demote chat creator":
+                pass
+            else:
+                message.reply_text("Could not gmute due to: {}".format(excp.message))
+                send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "Could not gmute due to: {}".format(excp.message))
+                sql.ungmute_user(user_id)
+                return
+        except TelegramError:
+            pass
 
-    os.environ['GPROCESS'] = '0'
-    bot.send_message(MESSAGE_DUMP, "gmute complete!")
+    send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "gmute complete!")
     message.reply_text("Person has been gmuted.")
 
 
@@ -419,25 +407,15 @@ def ungmute(bot: Bot, update: Update, args: List[str]):
         message.reply_text("This user is not gmuted!")
         return
 
-    if user_chat.first_name == '':
-        message.reply_text("That's a deleted account!")
-        return
-
-    if os.environ['GPROCESS'] == '1':
-        message.reply_text("Leave me alone, I'm busy, Someone is using global stuff.")
-        return
-
     muter = update.effective_user  # type: Optional[User]
 
     message.reply_text("I'll let {} speak again, globally.".format(user_chat.first_name))
 
-    bot.send_message(MESSAGE_DUMP,
+    send_to_list(bot, SUDO_USERS + SUPPORT_USERS,
                  "{} has ungmuted user {}".format(mention_html(muter.id, muter.first_name),
                                                    mention_html(user_chat.id, user_chat.first_name)),
-                 parse_mode=ParseMode.HTML)
+                 html=True)
 
-
-    os.environ['GPROCESS'] = '1'
     chats = get_all_chats()
     for chat in chats:
         chat_id = chat.chat_id
@@ -475,16 +453,13 @@ def ungmute(bot: Bot, update: Update, args: List[str]):
             else:
                 message.reply_text("Could not un-gmute due to: {}".format(excp.message))
                 bot.send_message(OWNER_ID, "Could not un-gmute due to: {}".format(excp.message))
-                os.environ['GPROCESS'] = '0'
                 return
         except TelegramError:
             pass
 
     sql.ungmute_user(user_id)
 
-    os.environ['GPROCESS'] = '0'
-
-    bot.send_message(MESSAGE_DUMP, "un-gmute complete!")
+    send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "un-gmute complete!")
 
     message.reply_text("Person has been un-gmuted.")
 
@@ -514,6 +489,26 @@ def check_and_mute(bot, update, user_id, should_message=True):
         bot.restrict_chat_member(update.effective_chat.id, user_id, can_send_messages=False)
         if should_message:
             update.effective_message.reply_text("This is a bad person, I'll silence them for you!")
+
+
+@run_async
+def enforce_gmute(bot: Bot, update: Update):
+    # Not using @restrict handler to avoid spamming - just ignore if cant gmute.
+    if sql.does_chat_gban(update.effective_chat.id) and update.effective_chat.get_member(bot.id).can_restrict_members:
+        user = update.effective_user  # type: Optional[User]
+        chat = update.effective_chat  # type: Optional[Chat]
+        msg = update.effective_message  # type: Optional[Message]
+
+        if user and not is_user_admin(chat, user.id):
+            check_and_mute(bot, update, user.id, should_message=True)
+        if msg.new_chat_members:
+            new_members = update.effective_message.new_chat_members
+            for mem in new_members:
+                check_and_mute(bot, update, mem.id, should_message=True)
+        if msg.reply_to_message:
+            user = msg.reply_to_message.from_user  # type: Optional[User]
+            if user and not is_user_admin(chat, user.id):
+                check_and_mute(bot, update, user.id, should_message=True)
 
 
 @run_async
