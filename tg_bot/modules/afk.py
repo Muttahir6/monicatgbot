@@ -76,25 +76,24 @@ def check_afk(bot, update, user_id, fst_name):
         if not user.reason:
             res = tld(chat.id, "{} is AFK!").format(fst_name)
         else:
-            res = tld(chat.id, "{} is AFK! says its because of: \n{}").format(fst_name, user.reason)
+            res = tld(chat.id, "{} is AFK! \n Reason: \n{}").format(fst_name, user.reason)
         update.effective_message.reply_text(res)
 
 
 
 __help__ = """
  - /afk <reason>: mark yourself as AFK.
-
+ - brb <reason>: same as the afk command - but not a command.
 When marked as AFK, any mentions will be replied to with a message to say you're not available!
 """
 
 __mod_name__ = "AFK"
 
 AFK_HANDLER = DisableAbleCommandHandler("afk", afk)
-#AFK_REGEX_HANDLER = DisableAbleRegexHandler("(?i)brb", afk, friendly="afk")
+AFK_REGEX_HANDLER = DisableAbleRegexHandler("(?i)brb", afk, friendly="afk")
 NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.group , no_longer_afk)
 AFK_REPLY_HANDLER = MessageHandler(Filters.all & Filters.group , reply_afk)
 
 dispatcher.add_handler(AFK_HANDLER, AFK_GROUP)
-#dispatcher.add_handler(AFK_REGEX_HANDLER, AFK_GROUP)
+dispatcher.add_handler(AFK_REGEX_HANDLER, AFK_GROUP)
 dispatcher.add_handler(NO_AFK_HANDLER, AFK_GROUP)
-dispatcher.add_handler(AFK_REPLY_HANDLER, AFK_REPLY_GROUP)
