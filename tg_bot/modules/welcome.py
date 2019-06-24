@@ -102,8 +102,9 @@ def new_member(bot: Bot, update: Update):
                 )
                 bot.send_message(
                     update.message.chat_id,
-                    "Thanks for adding me sweetheart. If you need any help contact @Muttahir."
+                    "Please contact @Muttahir if you want to add me to your group"
                 )
+                s_leave_group(bot, update, [str(update.message.chat_id)])
                 continue
 
             else:
