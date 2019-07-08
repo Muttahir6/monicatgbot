@@ -12,6 +12,7 @@ from typing import Optional, List
 from pythonping import ping as ping3
 from typing import Optional, List
 from PyLyrics import *
+from PIL import Image
 
 import requests
 from telegram import Message, Chat, Update, Bot, MessageEntity
