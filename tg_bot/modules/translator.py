@@ -1,18 +1,18 @@
 from typing import Optional, List
 
 from telegram import Message, Update, Bot, User
-from telegram import MessageEntity, ParseMode
+from telegram import MessageEntity
 from telegram.ext import Filters, MessageHandler, run_async
 
 from tg_bot import dispatcher, LOGGER
 from tg_bot.modules.disable import DisableAbleCommandHandler
-from tg_bot.modules.helper_funcs.extraction import extract_text
 
-from py-translator import Translator
+from py_translator import Translator
+
 
 @run_async
 def do_translate(bot: Bot, update: Update, args: List[str]):
-    short_name = "By @MonricaRoBot 😬"
+    short_name = "Created By @MidukkiBot 😬"
     msg = update.effective_message # type: Optional[Message]
     lan = " ".join(args)
     to_translate_text = msg.reply_to_message.text
@@ -26,7 +26,7 @@ def do_translate(bot: Bot, update: Update, args: List[str]):
         msg.reply_text(str(exc))
 
 
-__help__ = """- /tr (language code) as reply to a long message.
+__help__ = """- /tr - as reply to a long message
 """
 __mod_name__ = "Translator"
 
