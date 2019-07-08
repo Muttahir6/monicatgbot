@@ -369,6 +369,67 @@ def lyrics(bot: Bot, update: Update, args: List[str]):
 
 
 @run_async
+def stickerid(bot: Bot, update: Update):
+    msg = update.effective_message
+    if msg.reply_to_message and msg.reply_to_message.sticker:
+        update.effective_message.reply_text("Sticker ID:\n```" + 
+                                            escape_markdown(msg.reply_to_message.sticker.file_id) + "```",
+                                            parse_mode=ParseMode.MARKDOWN)
+    else:
+        update.effective_message.reply_text(tld(update.effective_chat, "Please reply to a sticker to get its ID."))
+
+
+@run_async
+def getsticker(bot: Bot, update: Update):
+    msg = update.effective_message
+    chat_id = update.effective_chat.id 
+    if msg.reply_to_message:
+       if msg.reply_to_message and msg.reply_to_message.sticker:
+            file_id = msg.reply_to_message.sticker.file_id 
+            newFile = bot.get_file(file_id)
+            newFile.download('sticker.png')
+            size = 512,512
+            try:
+               im = Image.open('sticker.png')
+               im.thumbnail(size, Image.ANTIALIAS)
+               im.save("sticker.png", "png") 
+               bot.sendDocument(chat_id, document=open('sticker.png', 'rb'))
+            except IOError: 
+                   update.effective_message.reply_text(tld(chat_id,"Oops! Something went wrong kindly report my master at @dopmherebot."))
+            os.remove("sticker.png")       
+       elif msg.reply_to_message.photo:
+            file_id = msg.reply_to_message.photo[-1].file_id 
+            newFile = bot.get_file(file_id)
+            newFile.download('sticker.png')
+            size = 512,512
+            try:
+               im = Image.open('sticker.png')
+               im.thumbnail(size, Image.ANTIALIAS)
+               im.save("sticker.png", "png") 
+               bot.sendDocument(chat_id, document=open('sticker.png', 'rb'))
+            except IOError: 
+                   update.effective_message.reply_text(tld(chat_id,"Oops! Something went wrong kindly report my master at @dopmherebot."))
+            os.remove("sticker.png")
+       elif msg.reply_to_message.document:
+            file_id = msg.reply_to_message.document.file_id
+            newFile = bot.get_file(file_id)
+            newFile.download('sticker.png')
+            size = 512,512
+            try:
+               im = Image.open('sticker.png')
+               im.thumbnail(size, Image.ANTIALIAS)
+               im.save("sticker.png", "png") 
+               bot.sendDocument(chat_id, document=open('sticker.png', 'rb'))
+            except IOError: 
+                   update.effective_message.reply_text(tld(chat_id,"Oops! Something went wrong kindly report my master at @dopmherebot."))
+            os.remove("sticker.png")
+       else:
+           update.effective_message.reply_text(tld(chat_id, "Unknown format. sticker/photo/document are the supported formats."))
+    else:
+        update.effective_message.reply_text(tld(chat_id, "Please reply to a sticker/photo/document for me to upload its PNG."))
+           
+
+@run_async
 def ud(bot: Bot, update: Update):
   message = update.effective_message
   text = message.text[len('/ud '):]
@@ -410,6 +471,8 @@ __help__ = """
  - /getsticker: reply to a sticker to me to upload its raw PNG file.
  - /markdownhelp: quick summary of how markdown works in telegram - can only be called in private chats.
  - /lyrics: Find your favorite songs lyrics!
+ - /stickerid: reply to a sticker to me to tell you its file ID.
+ - /sticker or /getsticker: reply to a photo/documents/sticker to me to upload its raw PNG file.
  - /ud: Type the word or expression you want to search. For example /ud Gay
  - /wiki: Query the Wikipedia
  - /removebotkeyboard: Got a nasty bot keyboard stuck in your group?
@@ -437,6 +500,9 @@ MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.
 STATS_HANDLER = CommandHandler("stats", stats, filters=Filters.user(OWNER_ID))
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
 
+STICKER_HANDLER = DisableAbleCommandHandler("stickerid", stickerid)
+STICKERID_HANDLER = DisableAbleCommandHandler(["sticker","getsticker"], getsticker)
+
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
 GOOGLE_HANDLER = DisableAbleCommandHandler("google", google)
@@ -460,3 +526,5 @@ dispatcher.add_handler(DisableAbleCommandHandler("removebotkeyboard", reply_keyb
 dispatcher.add_handler(WIKI_HANDLER)
 dispatcher.add_handler(GOOGLE_HANDLER)
 dispatcher.add_handler(TIME_HANDLER)
+dispatcher.add_handler(STICKER_HANDLER)
+dispatcher.add_handler(STICKERID_HANDLER)
