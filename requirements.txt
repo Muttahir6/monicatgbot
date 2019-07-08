@@ -20,4 +20,3 @@ tldextract
 pprint
 telegraph
 googletrans
-PIL
