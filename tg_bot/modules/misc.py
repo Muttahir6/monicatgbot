@@ -68,7 +68,7 @@ def slap(bot: Bot, update: Update, args: List[str]):
         slapped_user = bot.get_chat(user_id)
         user1 = curr_user
         if slapped_user.username:
-            user2 = "" + escape_markdown(slapped_user.username)
+            user2 = "@" + escape_markdown(slapped_user.username)
         else:
             user2 = "[{}](tg://user?id={})".format(slapped_user.first_name,
                                                    slapped_user.id)
