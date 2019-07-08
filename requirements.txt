@@ -19,3 +19,4 @@ gsearch
 tldextract
 pprint
 telegraph
+googletrans
