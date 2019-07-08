@@ -1,3 +1,4 @@
+
 import html
 from typing import Optional, List
 
@@ -162,16 +163,12 @@ def unlock(bot: Bot, update: Update, args: List[str]) -> str:
                 members = users_sql.get_chat_members(chat.id)
                 if args[0] == "messages":
                     unrestr_members(bot, chat.id, members, media=False, other=False, previews=False)
-
                 elif args[0] == "media":
                     unrestr_members(bot, chat.id, members, other=False, previews=False)
-
                 elif args[0] == "other":
                     unrestr_members(bot, chat.id, members, previews=False)
-
                 elif args[0] == "previews":
                     unrestr_members(bot, chat.id, members)
-
                 elif args[0] == "all":
                     unrestr_members(bot, chat.id, members, True, True, True, True)
                 """
@@ -240,11 +237,12 @@ def rest_handler(bot: Bot, update: Update):
 
 def build_lock_message(chat, chatP, user, chatname):
     locks = sql.get_locks(chat.id)
-    restr = sql.get_restr(chat.id)
+    restr = sql.get_restr(chat.id) 
+    chat_name = chat.title
     if not (locks or restr):
-        res = tld(chatP.id, "There are no current locks in *{}*.")
+        res = tld(chatP.id, "There are no current locks in *{}*.".format(chat_name))
     else:
-        res = tld(chatP.id, "These are the locks in *{}*:")
+        res = tld(chatP.id, "These are the locks in *{}*:".format(chat_name))
         if locks:
             res += "\n - sticker = `{}`" \
                    "\n - audio = `{}`" \
@@ -295,12 +293,10 @@ def __chat_settings__(bot, update, chat, chatP, user):
 
 __help__ = """
  - /locktypes: a list of possible locktypes
-
 *Admin only:*
  - /lock <type>: lock items of a certain type (not available in private)
  - /unlock <type>: unlock items of a certain type (not available in private)
  - /locks: the current list of locks in this chat.
-
 Locks can be used to restrict a group's users.
 eg:
 Locking urls will auto-delete all messages with urls which haven't been whitelisted, locking stickers will delete all \
