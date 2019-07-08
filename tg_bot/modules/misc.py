@@ -502,7 +502,7 @@ STATS_HANDLER = CommandHandler("stats", stats, filters=Filters.user(OWNER_ID))
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
 
 STICKER_HANDLER = DisableAbleCommandHandler("stickerid", stickerid)
-STICKERID_HANDLER = DisableAbleCommandHandler(["sticker","getsticker"], getsticker)
+STICKERID_HANDLER = DisableAbleCommandHandler(["getsticker","getsticker"], getsticker)
 
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
