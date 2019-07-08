@@ -7,7 +7,7 @@ from telegram.ext import run_async, CommandHandler, Filters
 from telegram.utils.helpers import mention_html
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, User, CallbackQuery
 
-from tg_bot import dispatcher, BAN_STICKER, LOGGER
+from tg_bot import dispatcher, BAN_STICKER, LOGGER, OWNER_ID
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.chat_status import bot_admin, user_admin, is_user_ban_protected, can_restrict, \
     is_user_admin, is_user_in_chat, is_bot_admin
@@ -43,7 +43,10 @@ def ban(bot: Bot, update: Update, args: List[str]) -> str:
     if user_id == bot.id:
         message.reply_text("Haha, you know what I ain't gonna do, ban myself?")
         return ""
-
+    elif user_id == OWNER_ID:
+        message.reply_text("Haha, you know what I ain't gonna do, ban my Boss?")
+        return ""
+    
     if is_user_ban_protected(chat, user_id, member):
         message.reply_text("I really wish I could ban admins...")
         return ""
