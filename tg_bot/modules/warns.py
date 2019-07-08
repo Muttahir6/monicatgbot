@@ -183,6 +183,8 @@ def warns(bot: Bot, update: Update, args: List[str]):
     chat = update.effective_chat  # type: Optional[Chat]
     user_id = extract_user(message, args) or update.effective_user.id
     result = sql.get_warns(user_id, chat.id)
+    user = update.effective_user
+    warned = chat.get_member(user_id).user 
 
     P = 1
 
@@ -190,17 +192,17 @@ def warns(bot: Bot, update: Update, args: List[str]):
         num_warns, reasons = result
         limit, soft_warn = sql.get_warn_setting(chat.id)
 
-        text = "This user has {}/{} warnings, for the following reasons:".format(num_warns, limit)
+        text = "{} has {}/{} warnings, for the following reasons:".format(mention_html(warned.id, warned.first_name),num_warns, limit)
         for reason in reasons:
-            text += "\n {}. `{}`".format(P, reason)
+            text += "\n {}. <code>{}</code>".format(P, reason)
             P = P + 1
 
         msgs = split_message(text)
         for msg in msgs:
-            update.effective_message.reply_text(msg, parse_mode=ParseMode.MARKDOWN)
+            update.effective_message.reply_text(msg, parse_mode=ParseMode.HTML)
 
     else:
-        update.effective_message.reply_text("This user hasn't got any warnings!")
+        update.effective_message.reply_text("{} hasn't got any warnings!".format(mention_html(warned.id, warned.first_name)), parse_mode=ParseMode.HTML)
 
 
 # Dispatcher handler stop - do not async
@@ -403,13 +405,12 @@ def __chat_settings__(bot, update, chat, chatP, user):
 __help__ = """
  - /warns <userhandle>: get a user's number, and reason, of warnings.
  - /warnlist: list of all current warning filters
-
 *Admin only:*
  - /warn <userhandle>: warn a user. After 3 warns, the user will be banned from the group. Can also be used as a reply.
- - /nowarns <userhandle>: reset the warnings for a user. Can also be used as a reply.
+ - /resetwarn <userhandle>: reset the warnings for a user. Can also be used as a reply.
  - /addwarn <keyword> <reply message>: set a warning filter on a certain keyword. If you want your keyword to \
 be a sentence, encompass it with quotes, as such: `/addwarn "very angry" This is an angry user`. 
- - /clearwarn <keyword>: stop a warning filter
+ - /nowarn <keyword>: stop a warning filter
  - /warnlimit <num>: set the warning limit
  - /strongwarn <on/yes/off/no>: If set to on, exceeding the warn limit will result in a ban. Else, will just kick.
 """
@@ -421,7 +422,7 @@ RESET_WARN_HANDLER = CommandHandler(["nowarns", "resetwarns"], reset_warns, pass
 CALLBACK_QUERY_HANDLER = CallbackQueryHandler(button, pattern=r"rm_warn")
 MYWARNS_HANDLER = DisableAbleCommandHandler("warns", warns, pass_args=True, filters=Filters.group)
 ADD_WARN_HANDLER = CommandHandler("addwarn", add_warn_filter, filters=Filters.group)
-RM_WARN_HANDLER = CommandHandler(["clearwarn", "stopwarn"], remove_warn_filter, filters=Filters.group)
+RM_WARN_HANDLER = CommandHandler(["rmwarn", "stopwarn"], remove_warn_filter, filters=Filters.group)
 LIST_WARN_HANDLER = DisableAbleCommandHandler(["warnlist", "warnfilters"], list_warn_filters, filters=Filters.group, admin_ok=True)
 WARN_FILTER_HANDLER = MessageHandler(CustomFilters.has_text & Filters.group, reply_filter)
 WARN_LIMIT_HANDLER = CommandHandler("warnlimit", set_warn_limit, pass_args=True, filters=Filters.group)
