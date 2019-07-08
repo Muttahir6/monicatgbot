@@ -52,14 +52,14 @@ def slap(bot: Bot, update: Update, args: List[str]):
     reply_text = msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text 
 
     if user_id == OWNER_ID:
-        msg.reply_text("W8 what!You want me to slap my Boss.You wanna cost me my Job.You must be kidding.")
+        msg.reply_text("I'm not gonna slap my owner are you crazy?")
         return
     if user_id == bot.id: 
-        msg.reply_text("Are you crazy🙄 You want me to slap myself!!!!!Why don't you come here. Then i will tell you!!!")
+        msg.reply_text("I'll slap myself so funny.")
         return
     # get user who sent message
     if msg.from_user.username:
-        curr_user = "" + escape_markdown(msg.from_user.username)
+        curr_user = "@" + escape_markdown(msg.from_user.username)
     else:
         curr_user = "[{}](tg://user?id={})".format(msg.from_user.first_name, msg.from_user.id)
 
