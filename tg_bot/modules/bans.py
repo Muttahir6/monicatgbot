@@ -39,14 +39,13 @@ def ban(bot: Bot, update: Update, args: List[str]) -> str:
             message.reply_text("I can't seem to find this user")
             return ""
         else:
-            raise
+            raise 
+    if user_id == bot.id:
+        message.reply_text("Haha, you know what I ain't gonna do, ban myself?")
+        return ""
 
     if is_user_ban_protected(chat, user_id, member):
         message.reply_text("I really wish I could ban admins...")
-        return ""
-
-    if user_id == bot.id:
-        message.reply_text("Yeahhh so funny but I'm not gonna do that")
         return ""
 
     log = "<b>{}:</b>" \
@@ -265,11 +264,11 @@ def unban(bot: Bot, update: Update, args: List[str]) -> str:
         return ""
 
     if is_user_in_chat(chat, user_id):
-        message.reply_text("Why are you trying to unban someone that's already in the chat?")
+        message.reply_text("{} already in the chat!".format(mention_html(member.user.id, member.user.first_name)), parse_mode=ParseMode.HTML)
         return ""
 
     chat.unban_member(user_id)
-    message.reply_text("Yep, this user can join!")
+    message.reply_text("Yep, {} can join back in {}!".format(mention_html(member.user.id, member.user.first_name), html.escape(chat.title)), parse_mode=ParseMode.HTML)
 
     log = "<b>{}:</b>" \
           "\n#UNBANNED" \
@@ -306,5 +305,3 @@ dispatcher.add_handler(TEMPBAN_HANDLER)
 dispatcher.add_handler(KICK_HANDLER)
 dispatcher.add_handler(UNBAN_HANDLER)
 dispatcher.add_handler(KICKME_HANDLER)
-
-
