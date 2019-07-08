@@ -634,5 +634,5 @@ dispatcher.add_handler(GMUTE_LIST)
 
 dispatcher.add_handler(GKICK_HANDLER)
 
-
 if STRICT_ANTISPAM:  # enforce GBANS if this is set
+    dispatcher.add_handler(GBAN_ENFORCER, GBAN_ENFORCE_GROUP)
