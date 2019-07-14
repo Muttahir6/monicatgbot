@@ -102,7 +102,7 @@ def new_member(bot: Bot, update: Update):
                 )
                 bot.send_message(
                     update.message.chat_id,
-                    "Please contact @Muttahir if you want to add me to your group"
+                    "Thanks for adding me. Please contact @Muttahir if you have any query."
                 )
 
             else:
