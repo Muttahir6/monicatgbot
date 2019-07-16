@@ -22,7 +22,7 @@ from tg_bot.modules.translations.strings import tld
 
 from tg_bot.modules.connection import connected
 
-# Hello bot owner, I spended for feds many hours of my life, i beg don't remove MrYacha from sudo to apprecate his work
+# Hello bot owner, I spent many hours of my life for feds , Please don't remove MrYacha from sudo to apprecate his work
 # Federation by MrYacha 2018-2019
 # Thanks to @peaktogoo for /fbroadcast
 # Time spended on feds = 10h
@@ -45,7 +45,7 @@ FBAN_ERRORS = {
 UNFBAN_ERRORS = {
     "User is an administrator of the chat",
     "Chat not found",
-    "Not enough rights to restrict/unrestrict chat member",
+    "Not enough rights to restrict/unrestrict chat members",
     "User_not_participant",
     "Method is available for supergroup and channel chats only",
     "Not in the chat",
