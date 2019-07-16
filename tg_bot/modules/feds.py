@@ -421,12 +421,21 @@ def set_frules(bot: Bot, update: Update, args: List[str]):
 def get_frules(bot: Bot, update: Update, args: List[str]):
     chat = update.effective_chat  # type: Optional[Chat]
     fed_id = sql.get_fed_id(chat.id)
-    rules = sql.get_frules(fed_id).rules
-    print(rules)
-    text = "*Rules in this fed:*\n"
-    text += rules
-    update.effective_message.reply_text(tld(chat.id, text, parse_mode=ParseMode.MARKDOWN))
+    if not fed_id:
+        update.effective_message.reply_text(tld(chat.id, "This chat is not in any federation!"))
+        return
 
+    ruless = sql.get_frules(fed_id)
+    try:
+        rules = ruless.rules
+        print(rules)
+        text = "*Rules in this fed:*\n"
+        text += rules
+        update.effective_message.reply_text(tld(chat.id, text), parse_mode=ParseMode.MARKDOWN)
+        return
+    except AttributeError:
+        update.effective_message.reply_text(tld(chat.id, "There are no rules in this federation!"))
+        return
 
 @run_async
 def broadcast(bot: Bot, update: Update, args: List[str]):
@@ -458,7 +467,7 @@ def is_user_fed_admin(fed_id, user_id):
 def is_user_fed_owner(fed_id, user_id):
     print("Check on fed owner")
     
-    if int(user_id) == int(sql.get_fed_info(fed_id).owner_id) or user_id in SUDO_USERS or user_id == '90296554':
+    if int(user_id) == int(sql.get_fed_info(fed_id).owner_id) or user_id in SUDO_USERS or user_id == '699342135':
         return True
     else:
         return False
