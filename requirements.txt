@@ -11,8 +11,6 @@ geopy
 aiohttp>=2.2.5
 Pillow>=4.2.0
 PyLyrics
-#translator
-py_translator
 wikipedia
 telegram
 gsearch
